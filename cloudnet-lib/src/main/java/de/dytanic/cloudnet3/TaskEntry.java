@@ -6,7 +6,7 @@ import java.util.concurrent.Callable;
 
 public class TaskEntry<T> {
 
-    private final TaskEntryFuture<T> future;
+    private final TaskEntryFuture future;
     protected volatile Callable<T> task;
     protected volatile T value = null;
     protected Callback<T> callback;
@@ -20,7 +20,7 @@ public class TaskEntry<T> {
         this.delay = delay;
         this.delayTimeOut = System.currentTimeMillis() + delay;
         this.repeat = repeat;
-        this.future = new TaskEntryFuture<>(this, false);
+        this.future = new TaskEntryFuture<>(false, this);
     }
 
 
