@@ -10,26 +10,23 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class CommandClearCache extends Command {
 
-    public CommandClearCache()
-    {
+    public CommandClearCache() {
         super("clearcache", "cloudnet.command.clearcache");
     }
 
     @Override
-    public void onExecuteCommand(CommandSender sender, String[] args)
-    {
-        try{
+    public void onExecuteCommand(CommandSender sender, String[] args) {
+        try {
 
             FileUtils.deleteDirectory(new File("local/cache"));
             Files.createDirectories(Paths.get("local/cache/web_templates"));
             Files.createDirectories(Paths.get("local/cache/web_plugins"));
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 

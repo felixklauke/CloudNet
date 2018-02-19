@@ -5,8 +5,8 @@
 package de.dytanic.cloudnetwrapper.server;
 
 import de.dytanic.cloudnet.lib.ConnectableAddress;
-import de.dytanic.cloudnet.lib.NetworkUtils;
 import de.dytanic.cloudnet.lib.MultiValue;
+import de.dytanic.cloudnet.lib.NetworkUtils;
 import de.dytanic.cloudnet.lib.server.ProxyGroup;
 import de.dytanic.cloudnet.lib.server.ProxyGroupMode;
 import de.dytanic.cloudnet.lib.server.ProxyProcessMeta;
@@ -16,8 +16,8 @@ import de.dytanic.cloudnet.lib.server.template.Template;
 import de.dytanic.cloudnet.lib.server.template.TemplateLoader;
 import de.dytanic.cloudnet.lib.server.template.TemplateResource;
 import de.dytanic.cloudnet.lib.server.version.ProxyVersion;
-import de.dytanic.cloudnet.lib.service.plugin.ServerInstallablePlugin;
 import de.dytanic.cloudnet.lib.service.ServiceId;
+import de.dytanic.cloudnet.lib.service.plugin.ServerInstallablePlugin;
 import de.dytanic.cloudnet.lib.user.SimpledUser;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnetwrapper.CloudNetWrapper;
@@ -55,8 +55,7 @@ public class BungeeCord implements ServerDispatcher {
 
     private ProxyInfo proxyInfo;
 
-    public BungeeCord(ProxyProcessMeta proxyProcessMeta, ProxyGroup proxyGroup)
-    {
+    public BungeeCord(ProxyProcessMeta proxyProcessMeta, ProxyGroup proxyGroup) {
         this.proxyProcessMeta = proxyProcessMeta;
         this.proxyGroup = proxyGroup;
 
@@ -65,57 +64,42 @@ public class BungeeCord implements ServerDispatcher {
     }
 
     @Override
-    public boolean bootstrap() throws Exception
-    {
+    public boolean bootstrap() throws Exception {
 
         long startupTime = System.currentTimeMillis();
-        if (proxyGroup.getTemplate().getBackend().equals(TemplateResource.URL))
-        {
+        if (proxyGroup.getTemplate().getBackend().equals(TemplateResource.URL)) {
         }
 
-        for (ServerInstallablePlugin url : proxyProcessMeta.getDownloadablePlugins())
-        {
-            if (!Files.exists(Paths.get("local/cache/web_plugins/" + url.getName() + ".jar")))
-            {
-                try
-                {
+        for (ServerInstallablePlugin url : proxyProcessMeta.getDownloadablePlugins()) {
+            if (!Files.exists(Paths.get("local/cache/web_plugins/" + url.getName() + ".jar"))) {
+                try {
                     URLConnection urlConnection = new java.net.URL(url.getUrl()).openConnection();
                     urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
                     Files.copy(urlConnection.getInputStream(), Paths.get("local/cache/web_plugins/" + url.getName() + ".jar"));
-                } catch (Exception ex)
-                {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         }
 
-        for (ServerInstallablePlugin url : proxyGroup.getTemplate().getInstallablePlugins())
-        {
+        for (ServerInstallablePlugin url : proxyGroup.getTemplate().getInstallablePlugins()) {
 
-            switch (url.getPluginResourceType())
-            {
-                case URL:
-                {
-                    if (!Files.exists(Paths.get("local/cache/web_plugins/" + url.getName() + ".jar")))
-                    {
-                        try
-                        {
+            switch (url.getPluginResourceType()) {
+                case URL: {
+                    if (!Files.exists(Paths.get("local/cache/web_plugins/" + url.getName() + ".jar"))) {
+                        try {
                             URLConnection urlConnection = new java.net.URL(url.getUrl()).openConnection();
                             urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
                             Files.copy(urlConnection.getInputStream(), Paths.get("local/cache/web_plugins/" + url.getName() + ".jar"));
-                        } catch (Exception ex)
-                        {
+                        } catch (Exception ex) {
                             ex.printStackTrace();
                         }
                     }
                 }
                 break;
-                case MASTER:
-                {
-                    if (!Files.exists(Paths.get("local/cache/web_plugins/" + url.getName() + ".jar")) && CloudNetWrapper.getInstance().getSimpledUser() != null)
-                    {
-                        try
-                        {
+                case MASTER: {
+                    if (!Files.exists(Paths.get("local/cache/web_plugins/" + url.getName() + ".jar")) && CloudNetWrapper.getInstance().getSimpledUser() != null) {
+                        try {
                             URLConnection urlConnection = new java.net.URL(new StringBuilder(CloudNetWrapper.getInstance().getOptionSet().has("ssl") ? "https://" : "http://")
                                     .append(CloudNetWrapper.getInstance().getWrapperConfig().getCloudnetHost())
                                     .append(":")
@@ -131,9 +115,8 @@ public class BungeeCord implements ServerDispatcher {
 
                             urlConnection.connect();
                             Files.copy(urlConnection.getInputStream(), Paths.get("local/cache/web_plugins/" + url.getName() + ".jar"));
-                            ((HttpURLConnection)urlConnection).disconnect();
-                        } catch (Exception ex)
-                        {
+                            ((HttpURLConnection) urlConnection).disconnect();
+                        } catch (Exception ex) {
                             ex.printStackTrace();
                         }
                     }
@@ -144,16 +127,12 @@ public class BungeeCord implements ServerDispatcher {
             }
         }
 
-        if (proxyGroup.getProxyGroupMode().equals(ProxyGroupMode.STATIC))
-        {
-            if (!Files.exists(dir))
-            {
+        if (proxyGroup.getProxyGroupMode().equals(ProxyGroupMode.STATIC)) {
+            if (!Files.exists(dir)) {
                 Files.createDirectories(dir);
-                if (proxyProcessMeta.getUrl() != null)
-                {
+                if (proxyProcessMeta.getUrl() != null) {
                     Files.createDirectory(Paths.get(path + "/plugins"));
-                    for (ServerInstallablePlugin plugin : proxyProcessMeta.getDownloadablePlugins())
-                    {
+                    for (ServerInstallablePlugin plugin : proxyProcessMeta.getDownloadablePlugins()) {
                         FileCopy.copyFileToDirectory(new File("local/cache/web_plugins/" + plugin.getName() + ".jar"), new File(path + "/plugins"));
                     }
 
@@ -161,34 +140,28 @@ public class BungeeCord implements ServerDispatcher {
                     System.out.println("Downloading template for " + this.proxyProcessMeta.getServiceId().getServerId());
                     templateLoader.load();
                     templateLoader.unZip(path);
-                } else
-                {
+                } else {
 
                     Files.createDirectory(Paths.get(path + "/plugins"));
-                    for (ServerInstallablePlugin plugin : proxyProcessMeta.getDownloadablePlugins())
-                    {
+                    for (ServerInstallablePlugin plugin : proxyProcessMeta.getDownloadablePlugins()) {
                         FileCopy.copyFileToDirectory(new File("local/cache/web_plugins/" + plugin.getName() + ".jar"), new File(path + "/plugins"));
                     }
 
-                    for (ServerInstallablePlugin plugin : proxyGroup.getTemplate().getInstallablePlugins())
-                    {
+                    for (ServerInstallablePlugin plugin : proxyGroup.getTemplate().getInstallablePlugins()) {
                         FileCopy.copyFileToDirectory(new File("local/cache/web_plugins/" + plugin.getName() + ".jar"), new File(path + "/plugins"));
                     }
 
                     Template template = proxyGroup.getTemplate();
-                    if (template.getBackend().equals(TemplateResource.URL) && template.getUrl() != null)
-                    {
+                    if (template.getBackend().equals(TemplateResource.URL) && template.getUrl() != null) {
                         String groupTemplates = "local/cache/web_templates/" + proxyGroup.getName();
                         TemplateLoader templateLoader = new TemplateLoader(template.getUrl(), groupTemplates + "/template.zip");
                         System.out.println("Downloading template for " + this.proxyProcessMeta.getServiceId().getGroup());
                         templateLoader.load();
                         templateLoader.unZip(groupTemplates);
                         FileCopy.copyFilesInDirectory(new File("local/cache/web_templates/" + proxyGroup.getName()), new File(path));
-                    } else if (template.getBackend().equals(TemplateResource.MASTER) && CloudNetWrapper.getInstance().getSimpledUser() != null)
-                    {
+                    } else if (template.getBackend().equals(TemplateResource.MASTER) && CloudNetWrapper.getInstance().getSimpledUser() != null) {
                         String groupTemplates = "local/cache/web_templates/" + proxyGroup.getName() + "/" + template.getName();
-                        if (!Files.exists(Paths.get(groupTemplates)))
-                        {
+                        if (!Files.exists(Paths.get(groupTemplates))) {
                             Files.createDirectories(Paths.get(groupTemplates));
                             MasterTemplateLoader templateLoader = new MasterTemplateLoader(new StringBuilder(
                                     CloudNetWrapper.getInstance().getOptionSet().has("ssl") ? "https://" : "http://"
@@ -203,28 +176,22 @@ public class BungeeCord implements ServerDispatcher {
                             templateLoader.unZip(groupTemplates);
                         }
                         FileCopy.copyFilesInDirectory(new File(groupTemplates), new File(path));
-                    } else if (Files.exists(Paths.get("local/templates/" + proxyGroup.getName())))
-                    {
+                    } else if (Files.exists(Paths.get("local/templates/" + proxyGroup.getName()))) {
 
                         FileCopy.copyFilesInDirectory(new File("local/templates/" + proxyGroup.getName()), new File(path));
-                    } else
-                    {
+                    } else {
                         return false;
                     }
                 }
             }
-        } else
-        {
-            try
-            {
+        } else {
+            try {
                 FileUtils.deleteDirectory(new File(path));
-            } catch (Exception ex)
-            {
+            } catch (Exception ex) {
             }
             Files.createDirectories(dir);
 
-            if (proxyProcessMeta.getUrl() != null)
-            {
+            if (proxyProcessMeta.getUrl() != null) {
 
                 Files.createDirectory(Paths.get(path + "/plugins"));
                 for (ServerInstallablePlugin plugin : proxyProcessMeta.getDownloadablePlugins())
@@ -237,29 +204,24 @@ public class BungeeCord implements ServerDispatcher {
                 System.out.println("Downloading template for " + this.proxyProcessMeta.getServiceId().getServerId());
                 templateLoader.load();
                 templateLoader.unZip(path);
-            } else
-            {
+            } else {
 
                 Files.createDirectory(Paths.get(path + "/plugins"));
-                for (ServerInstallablePlugin plugin : proxyProcessMeta.getDownloadablePlugins())
-                {
+                for (ServerInstallablePlugin plugin : proxyProcessMeta.getDownloadablePlugins()) {
                     FileCopy.copyFileToDirectory(new File("local/cache/web_plugins/" + plugin.getName() + ".jar"), new File(path + "/plugins"));
                 }
 
                 Template template = proxyGroup.getTemplate();
-                if (template.getBackend().equals(TemplateResource.URL) && template.getUrl() != null)
-                {
+                if (template.getBackend().equals(TemplateResource.URL) && template.getUrl() != null) {
                     String groupTemplates = "local/cache/web_templates/" + proxyGroup.getName();
                     TemplateLoader templateLoader = new TemplateLoader(template.getUrl(), groupTemplates + "/template.zip");
                     System.out.println("Downloading template for " + this.proxyProcessMeta.getServiceId().getGroup());
                     templateLoader.load();
                     templateLoader.unZip(groupTemplates);
                     FileCopy.copyFilesInDirectory(new File("local/cache/web_templates/" + proxyGroup.getName()), new File(path));
-                } else if (template.getBackend().equals(TemplateResource.MASTER) && CloudNetWrapper.getInstance().getSimpledUser() != null)
-                {
+                } else if (template.getBackend().equals(TemplateResource.MASTER) && CloudNetWrapper.getInstance().getSimpledUser() != null) {
                     String groupTemplates = "local/cache/web_templates/" + proxyGroup.getName() + "/" + template.getName();
-                    if (!Files.exists(Paths.get(groupTemplates)))
-                    {
+                    if (!Files.exists(Paths.get(groupTemplates))) {
                         Files.createDirectories(Paths.get(groupTemplates));
                         MasterTemplateLoader templateLoader = new MasterTemplateLoader(new StringBuilder(
                                 CloudNetWrapper.getInstance().getOptionSet().has("ssl") ? "https://" : "http://"
@@ -274,37 +236,30 @@ public class BungeeCord implements ServerDispatcher {
                         templateLoader.unZip(groupTemplates);
                     }
                     FileCopy.copyFilesInDirectory(new File(groupTemplates), new File(path));
-                } else if (Files.exists(Paths.get("local/templates/" + proxyGroup.getName())))
-                {
+                } else if (Files.exists(Paths.get("local/templates/" + proxyGroup.getName()))) {
 
                     FileCopy.copyFilesInDirectory(new File("local/templates/" + proxyGroup.getName()), new File(path));
-                } else
-                {
+                } else {
                     return false;
                 }
             }
         }
 
-        if (!Files.exists(Paths.get(path + "/config.yml")))
-        {
+        if (!Files.exists(Paths.get(path + "/config.yml"))) {
             FileCopy.insertData("files/config.yml", path + "/config.yml");
         }
 
-        if (!Files.exists(Paths.get(path + "/BungeeCord.jar")))
-        {
+        if (!Files.exists(Paths.get(path + "/BungeeCord.jar"))) {
             MultiValue<String, String> version = ProxyVersion.url(proxyGroup.getProxyVersion());
             Path path = Paths.get("local/proxy_versions/" + version.getSecond());
-            if (!Files.exists(path))
-            {
-                try
-                {
+            if (!Files.exists(path)) {
+                try {
                     URLConnection urlConnection = new URL(version.getFirst()).openConnection();
                     urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
                     urlConnection.connect();
                     System.out.println("Downloading " + version.getSecond() + "...");
                     Files.copy(urlConnection.getInputStream(), path);
-                } catch (Exception ex)
-                {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
@@ -319,14 +274,11 @@ public class BungeeCord implements ServerDispatcher {
         Files.deleteIfExists(Paths.get(path + "/plugins/CloudNetAPI.jar"));
         FileCopy.insertData("files/CloudNetAPI.jar", path + "/plugins/CloudNetAPI.jar");
 
-        FileCopy.rewriteFileUtils(new File(path + "/config.yml"),  "\""+ CloudNetWrapper.getInstance().getWrapperConfig().getProxy_config_host() + ":" + this.proxyProcessMeta.getPort() + "\"");
+        FileCopy.rewriteFileUtils(new File(path + "/config.yml"), "\"" + CloudNetWrapper.getInstance().getWrapperConfig().getProxy_config_host() + ":" + this.proxyProcessMeta.getPort() + "\"");
 
-        if (CloudNetWrapper.getInstance().getWrapperConfig().isViaVersion())
-        {
-            if (!Files.exists(Paths.get("local/ViaVersion-Proxied.jar")))
-            {
-                try
-                {
+        if (CloudNetWrapper.getInstance().getWrapperConfig().isViaVersion()) {
+            if (!Files.exists(Paths.get("local/ViaVersion-Proxied.jar"))) {
+                try {
                     System.out.println("Downloading ViaVersion...");
                     URLConnection url = new URL("https://ci.viaversion.com/job/ViaVersion/lastSuccessfulBuild/artifact/jar/target/ViaVersion-1.3.0.jar").openConnection();
                     url.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
@@ -334,8 +286,7 @@ public class BungeeCord implements ServerDispatcher {
                     Files.copy(url.getInputStream(), Paths.get("local/ViaVersion-Proxied.jar"));
                     ((HttpURLConnection) url).disconnect();
                     System.out.println("Download complete successfully!");
-                } catch (Exception ex)
-                {
+                } catch (Exception ex) {
 
                 }
             }
@@ -382,51 +333,39 @@ public class BungeeCord implements ServerDispatcher {
     }
 
     @Override
-    public boolean shutdown()
-    {
+    public boolean shutdown() {
 
-        if (instance == null)
-        {
-            if (proxyGroup.getProxyGroupMode().equals(ProxyGroupMode.DYNAMIC))
-            {
-                try
-                {
+        if (instance == null) {
+            if (proxyGroup.getProxyGroupMode().equals(ProxyGroupMode.DYNAMIC)) {
+                try {
                     Files.delete(Paths.get(path));
-                } catch (IOException e)
-                {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
             return true;
         }
 
-        if (instance.isAlive())
-        {
+        if (instance.isAlive()) {
             executeCommand("end");
             NetworkUtils.sleepUninterruptedly(500);
         }
 
         instance.destroyForcibly();
 
-        if (CloudNetWrapper.getInstance().getWrapperConfig().isSavingRecords())
-        {
-            try
-            {
+        if (CloudNetWrapper.getInstance().getWrapperConfig().isSavingRecords()) {
+            try {
                 FileCopy.copyFilesInDirectory(new File(path), new File("local/records/" + proxyProcessMeta.getServiceId().toString()));
                 new Document("meta", proxyProcessMeta).saveAsConfig(Paths.get("local/records/metadata.json"));
-            } catch (IOException e)
-            {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        if (proxyGroup.getProxyGroupMode().equals(ProxyGroupMode.DYNAMIC))
-        {
-            try
-            {
+        if (proxyGroup.getProxyGroupMode().equals(ProxyGroupMode.DYNAMIC)) {
+            try {
                 FileUtils.deleteDirectory(new File(path));
-            } catch (IOException e)
-            {
+            } catch (IOException e) {
             }
         }
 
@@ -434,24 +373,20 @@ public class BungeeCord implements ServerDispatcher {
         CloudNetWrapper.getInstance().getNetworkConnection().sendPacket(new PacketOutRemoveProxy(proxyInfo));
         System.out.println("Proxy " + toString() + " was stopped");
 
-        try
-        {
+        try {
             this.finalize();
-        } catch (Throwable throwable)
-        {
+        } catch (Throwable throwable) {
         }
         return true;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "[" + proxyProcessMeta.getServiceId().getServerId() + "/port=" + proxyProcessMeta.getPort() + "/memory=" + proxyProcessMeta.getMemory() + "]";
     }
 
     @Override
-    public ServiceId getServiceId()
-    {
+    public ServiceId getServiceId() {
         return proxyProcessMeta.getServiceId();
     }
 }

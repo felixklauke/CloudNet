@@ -11,14 +11,12 @@ public class ModuleInternalLoader implements ModuleLoader {
 
     private ModuleConfig moduleConfig;
 
-    public ModuleInternalLoader(ModuleConfig moduleConfig)
-    {
+    public ModuleInternalLoader(ModuleConfig moduleConfig) {
         this.moduleConfig = moduleConfig;
     }
 
     @Override
-    public Module loadModule() throws Exception
-    {
+    public Module loadModule() throws Exception {
         Module module = (Module) getClass().getClassLoader().loadClass(this.moduleConfig.getMain()).newInstance();
         module.setModuleConfig(moduleConfig);
         module.setClassLoader(null);

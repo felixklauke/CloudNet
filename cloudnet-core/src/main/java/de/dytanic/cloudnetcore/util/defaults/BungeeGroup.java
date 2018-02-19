@@ -13,12 +13,10 @@ import de.dytanic.cloudnet.lib.server.version.ProxyVersion;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class BungeeGroup extends ProxyGroup {
 
-    public BungeeGroup()
-    {
+    public BungeeGroup() {
         super("Bungee", Arrays.asList("Wrapper-1"), new Template(
                 "default",
                 TemplateResource.LOCAL,

@@ -2,21 +2,16 @@ package de.dytanic.cloudnet3;
 
 import de.dytanic.cloudnet.lib.utility.threading.Callback;
 
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
 
 public class TaskEntry<T> {
 
-    protected volatile Callable<T> task;
-
-    protected volatile T value = null;
-
-    protected Callback<T> callback;
-
-    protected long delayTimeOut, repeat, delay;
-
-    protected boolean completed = false;
-
     private final TaskEntryFuture<T> future;
+    protected volatile Callable<T> task;
+    protected volatile T value = null;
+    protected Callback<T> callback;
+    protected long delayTimeOut, repeat, delay;
+    protected boolean completed = false;
 
     public TaskEntry(Callable<T> task, Callback<T> complete, long delay, long repeat) {
 
@@ -27,7 +22,6 @@ public class TaskEntry<T> {
         this.repeat = repeat;
         this.future = new TaskEntryFuture<>(this, false);
     }
-
 
 
     protected void invoke() throws Exception {
@@ -46,12 +40,10 @@ public class TaskEntry<T> {
 
         if (repeat != 0)
             this.delayTimeOut = System.currentTimeMillis() + delay;
-        else
-        {
+        else {
             completed = true;
 
-            if(future.waits)
-            {
+            if (future.waits) {
                 synchronized (future) {
                     future.notifyAll();
                 }
@@ -60,11 +52,9 @@ public class TaskEntry<T> {
     }
 
 
-
     public Callback<T> getCallback() {
         return callback;
     }
-
 
 
     public long getDelayTimeOut() {
@@ -72,17 +62,14 @@ public class TaskEntry<T> {
     }
 
 
-
     public long getRepeat() {
         return repeat;
     }
 
 
-
     protected TaskEntryFuture<T> drop() {
         return future;
     }
-
 
 
     public boolean isCompleted() {

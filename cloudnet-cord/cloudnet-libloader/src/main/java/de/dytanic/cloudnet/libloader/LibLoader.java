@@ -26,24 +26,18 @@ public class LibLoader {
 
     private URLClassLoader urlClassLoader;
 
-    public LibLoader(File file)
-    {
+    public LibLoader(File file) {
         this.file = file;
     }
 
-    public void load()
-    {
+    public void load() {
         URL[] url = new URL[file.list().length];
-        for(File file : this.file.listFiles())
-        {
-            if(file.getName().endsWith(".jar"))
-            {
+        for (File file : this.file.listFiles()) {
+            if (file.getName().endsWith(".jar")) {
                 libarys.add(new Libary(Paths.get(file.getPath()), file.getName()));
-                try
-                {
+                try {
                     Arrays.fill(url, file.toURI().toURL());
-                } catch (MalformedURLException e)
-                {
+                } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
             }

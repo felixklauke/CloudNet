@@ -9,8 +9,7 @@ package de.dytanic.cloudnet.cloudflare.exception;
  */
 public class CloudFlareDNSRecordException extends RuntimeException {
 
-    public CloudFlareDNSRecordException(String message)
-    {
+    public CloudFlareDNSRecordException(String message) {
         super(message);
     }
 }

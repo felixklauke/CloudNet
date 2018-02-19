@@ -10,7 +10,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -38,16 +41,14 @@ public class CloudLogger
     @Setter
     private boolean debugging = false;
 
-    public CloudLogger() throws Exception
-    {
+    public CloudLogger() throws Exception {
         super("CloudNetServerLogger", null);
 
-        try
-        {
+        try {
             Field field = Charset.class.getDeclaredField("defaultCharset");
             field.setAccessible(true);
             field.set(null, Charset.forName("UTF-8"));
-        }catch (Exception ex) {
+        } catch (Exception ex) {
 
         }
 
@@ -82,20 +83,16 @@ public class CloudLogger
 
     }
 
-    public void debug(String message)
-    {
+    public void debug(String message) {
         if (debugging)
             log(Level.WARNING, "[DEBUG] " + message);
     }
 
-    public void shutdownAll()
-    {
+    public void shutdownAll() {
         for (Handler handler : getHandlers()) handler.close();
-        try
-        {
+        try {
             this.reader.killLine();
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
         }
     }
 
@@ -106,8 +103,7 @@ public class CloudLogger
 
         @SuppressWarnings("deprecation")
         @Override
-        public void flush() throws IOException
-        {
+        public void flush() throws IOException {
             String contents = toString(StandardCharsets.UTF_8.name());
             super.reset();
             if (!contents.isEmpty() && !contents.equals(separator))
@@ -119,40 +115,33 @@ public class CloudLogger
             extends Handler {
 
         @Override
-        public void publish(LogRecord record)
-        {
+        public void publish(LogRecord record) {
             String formatMessage = getFormatter().formatMessage(record);
             for (ICloudLoggerHandler handler : CloudLogger.this.getHandler()) handler.handleConsole(formatMessage);
 
             if (isLoggable(record)) handle(getFormatter().format(record));
         }
 
-        public void handle(String message)
-        {
+        public void handle(String message) {
             AsyncPrintStream.ASYNC_QUEUE.offer(new Runnable() {
                 @Override
-                public void run()
-                {
-                    try
-                    {
+                public void run() {
+                    try {
                         reader.print(ConsoleReader.RESET_LINE + message);
                         reader.drawLine();
                         reader.flush();
-                    } catch (Exception ex)
-                    {
+                    } catch (Exception ex) {
                     }
                 }
             });
         }
 
         @Override
-        public void flush()
-        {
+        public void flush() {
         }
 
         @Override
-        public void close() throws SecurityException
-        {
+        public void close() throws SecurityException {
         }
     }
 
@@ -162,11 +151,9 @@ public class CloudLogger
         private final DateFormat format = new SimpleDateFormat("HH:mm:ss");
 
         @Override
-        public String format(LogRecord record)
-        {
+        public String format(LogRecord record) {
             StringBuilder builder = new StringBuilder();
-            if (record.getThrown() != null)
-            {
+            if (record.getThrown() != null) {
                 StringWriter writer = new StringWriter();
                 record.getThrown().printStackTrace(new PrintWriter(writer));
                 builder.append(writer).append("\n");
@@ -184,11 +171,9 @@ public class CloudLogger
         private final DateFormat format = new SimpleDateFormat("HH:mm:ss");
 
         @Override
-        public String format(LogRecord record)
-        {
+        public String format(LogRecord record) {
             StringBuilder builder = new StringBuilder();
-            if (record.getThrown() != null)
-            {
+            if (record.getThrown() != null) {
                 StringWriter writer = new StringWriter();
                 record.getThrown().printStackTrace(new PrintWriter(writer));
                 builder.append(writer).append("\n");

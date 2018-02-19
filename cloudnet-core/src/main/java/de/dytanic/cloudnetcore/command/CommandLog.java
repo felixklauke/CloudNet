@@ -15,33 +15,26 @@ import de.dytanic.cloudnetcore.network.components.MinecraftServer;
  */
 public class CommandLog extends Command {
 
-    public CommandLog()
-    {
+    public CommandLog() {
         super("log", "cloudnet.command.log");
     }
 
     @Override
-    public void onExecuteCommand(CommandSender sender, String[] args)
-    {
-        switch (args.length)
-        {
-            case 1:
-            {
+    public void onExecuteCommand(CommandSender sender, String[] args) {
+        switch (args.length) {
+            case 1: {
                 MinecraftServer minecraftServer = CloudNet.getInstance().getServer(args[0]);
-                if(minecraftServer != null)
-                {
+                if (minecraftServer != null) {
                     String rndm = NetworkUtils.randomString(10);
                     CloudNet.getInstance().getServerLogManager().append(rndm, minecraftServer.getServerId());
                     String x = new StringBuilder(CloudNet.getInstance().getOptionSet().has("ssl") ? "https://" : "http://").append(CloudNet.getInstance().getConfig().getWebServerConfig().getAddress()).append(":").append(CloudNet.getInstance().getConfig().getWebServerConfig().getPort()).append("/cloudnet/log?server=").append(rndm).substring(0);
                     sender.sendMessage("You can see the log at: " + x);
                     sender.sendMessage("The log is dynamic and will be deleted in 10 minutes");
-                }
-                else
-                {
+                } else {
                     sender.sendMessage("The server doesn't exist!");
                 }
             }
-                break;
+            break;
             default:
                 sender.sendMessage("log <server> | Creates a web server log");
                 break;

@@ -8,8 +8,8 @@ import de.dytanic.cloudnet.lib.network.protocol.packet.Packet;
 import de.dytanic.cloudnet.lib.network.protocol.packet.PacketRC;
 import de.dytanic.cloudnet.lib.network.protocol.packet.PacketSender;
 import de.dytanic.cloudnet.lib.server.info.ProxyInfo;
-import de.dytanic.cloudnet.lib.utility.CollectionWrapper;
 import de.dytanic.cloudnet.lib.utility.Catcher;
+import de.dytanic.cloudnet.lib.utility.CollectionWrapper;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnetcore.CloudNet;
 import de.dytanic.cloudnetcore.network.components.ProxyServer;
@@ -22,25 +22,19 @@ import java.util.Collection;
 public class PacketAPIInGetProxys extends PacketAPIIO {
 
     @Override
-    public void handleInput(Document data, PacketSender packetSender)
-    {
-        if(data.contains("group"))
-        {
+    public void handleInput(Document data, PacketSender packetSender) {
+        if (data.contains("group")) {
             Collection<ProxyInfo> proxyInfos = CollectionWrapper.transform(CloudNet.getInstance().getProxys(data.getString("group")), new Catcher<ProxyInfo, ProxyServer>() {
                 @Override
-                public ProxyInfo doCatch(ProxyServer key)
-                {
+                public ProxyInfo doCatch(ProxyServer key) {
                     return key.getProxyInfo();
                 }
             });
             packetSender.sendPacket(getResult(new Document("proxyInfos", proxyInfos)));
-        }
-        else
-        {
+        } else {
             Collection<ProxyInfo> proxyInfos = CollectionWrapper.transform(CloudNet.getInstance().getProxys().values(), new Catcher<ProxyInfo, ProxyServer>() {
                 @Override
-                public ProxyInfo doCatch(ProxyServer key)
-                {
+                public ProxyInfo doCatch(ProxyServer key) {
                     return key.getProxyInfo();
                 }
             });
@@ -49,8 +43,7 @@ public class PacketAPIInGetProxys extends PacketAPIIO {
     }
 
     @Override
-    protected Packet getResult(Document value)
-    {
+    protected Packet getResult(Document value) {
         return new Packet(packetUniqueId, PacketRC.SERVER_HANDLE, value);
     }
 }

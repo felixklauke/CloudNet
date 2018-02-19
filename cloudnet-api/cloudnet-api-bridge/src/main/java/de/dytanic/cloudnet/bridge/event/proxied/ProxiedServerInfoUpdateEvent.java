@@ -6,7 +6,6 @@ package de.dytanic.cloudnet.bridge.event.proxied;
 
 import de.dytanic.cloudnet.lib.server.info.ServerInfo;
 import lombok.AllArgsConstructor;
-import net.md_5.bungee.api.plugin.Event;
 
 /**
  * Called if the server info from one server was updated
@@ -16,8 +15,7 @@ public class ProxiedServerInfoUpdateEvent extends ProxiedCloudEvent {
 
     private ServerInfo serverInfo;
 
-    public ServerInfo getServerInfo()
-    {
+    public ServerInfo getServerInfo() {
         return serverInfo;
     }
 }

@@ -13,8 +13,6 @@ import lombok.Getter;
 import java.io.File;
 import java.util.Collection;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
 /**
@@ -23,67 +21,58 @@ import java.util.concurrent.FutureTask;
 @Getter
 @AllArgsConstructor
 public class DatabaseImpl
-            implements Database {
+        implements Database {
 
     private final String name;
     private final java.util.Map<String, Document> documents;
     private final File backendDir;
 
     @Override
-    public Database loadDocuments()
-    {
-        for(File file : backendDir.listFiles())
-            if(!this.documents.containsKey(file.getName()))
-            this.documents.put(file.getName(), Document.loadDocument(file));
+    public Database loadDocuments() {
+        for (File file : backendDir.listFiles())
+            if (!this.documents.containsKey(file.getName()))
+                this.documents.put(file.getName(), Document.loadDocument(file));
 
         return this;
     }
 
     @Override
-    public boolean containsDoc(String name)
-    {
+    public boolean containsDoc(String name) {
         return new File("database/" + this.name + "/" + name).exists();
     }
 
     @Override
-    public Collection<Document> getDocs()
-    {
+    public Collection<Document> getDocs() {
         return documents.values();
     }
 
     @Override
-    public Document getDocument(String name)
-    {
+    public Document getDocument(String name) {
         Document document = documents.get(name);
 
-        if(document == null)
-        {
+        if (document == null) {
             File doc = new File("database/" + this.name + "/" + name);
-            if(doc.exists())
-            {
-               document = Document.loadDocument(doc);
-               this.documents.put(doc.getName(), document);
-               return document;
+            if (doc.exists()) {
+                document = Document.loadDocument(doc);
+                this.documents.put(doc.getName(), document);
+                return document;
             }
         }
         return document;
     }
 
     @Override
-    public Database insert(Document... documents)
-    {
-        for(Document document : documents)
-            if(document.contains(UNIQUE_NAME_KEY))
+    public Database insert(Document... documents) {
+        for (Document document : documents)
+            if (document.contains(UNIQUE_NAME_KEY))
                 this.documents.put(document.getString(UNIQUE_NAME_KEY), document);
         return this;
     }
 
     @Override
-    public Database delete(String name)
-    {
+    public Database delete(String name) {
         Document document = getDocument(name);
-        if(document != null)
-        {
+        if (document != null) {
             documents.remove(document);
         }
         new File("database/" + this.name + "/" + name).delete();
@@ -91,44 +80,37 @@ public class DatabaseImpl
     }
 
     @Override
-    public Database delete(Document document)
-    {
+    public Database delete(Document document) {
         this.documents.remove(document);
         new File("database/" + this.name + "/" + name).delete();
         return this;
     }
 
     @Override
-    public Document load(String name)
-    {
+    public Document load(String name) {
         return Document.loadDocument(new File("database/databases/" + this.name + "/" + name));
     }
 
     @Override
-    public boolean contains(Document document)
-    {
+    public boolean contains(Document document) {
         return contains(document);
     }
 
     @Override
-    public boolean contains(String name)
-    {
+    public boolean contains(String name) {
         return getDocument(name) != null;
     }
 
     @Override
-    public int size()
-    {
+    public int size() {
         return backendDir.list().length;
     }
 
     @Override
-    public Database insertAsync(Document... documents)
-    {
+    public Database insertAsync(Document... documents) {
         TaskScheduler.runtimeScheduler().schedule(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 insert(documents);
             }
         });
@@ -136,12 +118,10 @@ public class DatabaseImpl
     }
 
     @Override
-    public Database deleteAsync(String name)
-    {
+    public Database deleteAsync(String name) {
         TaskScheduler.runtimeScheduler().schedule(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 delete(name);
             }
         });
@@ -149,26 +129,22 @@ public class DatabaseImpl
     }
 
     @Override
-    public FutureTask<Document> getDocumentAsync(String name)
-    {
+    public FutureTask<Document> getDocumentAsync(String name) {
         FutureTask<Document> get = new FutureTask<>(new Callable<Document>() {
             @Override
-            public Document call() throws Exception
-            {
+            public Document call() {
                 return getDocument(name);
             }
         });
         return get;
     }
 
-    public void save()
-    {
-        for(Document document : documents.values())
+    public void save() {
+        for (Document document : documents.values())
             document.saveAsConfig0(new File("database/" + this.name + "/" + document.getString(UNIQUE_NAME_KEY)));
     }
 
-    public void clear()
-    {
+    public void clear() {
         this.documents.clear();
     }
 }

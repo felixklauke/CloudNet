@@ -13,31 +13,25 @@ public final class ScreenProvider {
     private final java.util.Map<Screenable, ScreenLoader> loads = new ConcurrentHashMap<>();
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
-    public void putScreenRequest(Screenable screenable)
-    {
+    public void putScreenRequest(Screenable screenable) {
         ScreenLoader screenLoader = new ScreenLoader(screenable);
         executorService.execute(screenLoader);
         loads.put(screenable, screenLoader);
     }
 
-    public void cancel(Screenable screenable)
-    {
-        if(loads.containsKey(screenable))
-        {
+    public void cancel(Screenable screenable) {
+        if (loads.containsKey(screenable)) {
             loads.get(screenable).cancel();
             loads.remove(screenable);
         }
     }
 
-    public boolean contains(Screenable screenable)
-    {
+    public boolean contains(Screenable screenable) {
         return loads.containsKey(screenable);
     }
 
-    public void shutdown()
-    {
-        for(Screenable screenable : loads.keySet())
-        {
+    public void shutdown() {
+        for (Screenable screenable : loads.keySet()) {
             cancel(screenable);
         }
 

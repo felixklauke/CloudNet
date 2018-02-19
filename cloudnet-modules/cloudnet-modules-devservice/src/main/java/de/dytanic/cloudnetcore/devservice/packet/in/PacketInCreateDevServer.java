@@ -14,8 +14,7 @@ import de.dytanic.cloudnet.lib.utility.document.Document;
 public class PacketInCreateDevServer extends PacketInHandler {
 
     @Override
-    public void handleInput(Document data, PacketSender packetSender)
-    {
+    public void handleInput(Document data, PacketSender packetSender) {
 
     }
 }

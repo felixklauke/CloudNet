@@ -9,17 +9,16 @@ package de.dytanic.cloudnet.lib.hash;
  */
 public final class DyHash {
 
-    private DyHash() {}
+    private DyHash() {
+    }
 
-    public static String hashString(String encode)
-    {
+    public static String hashString(String encode) {
         StringBuilder stringBuilder = new StringBuilder();
         int length = encode.length();
 
-        for(char c : encode.toCharArray())
-        {
-            byte b = (byte)c;
-            char d = (char)b;
+        for (char c : encode.toCharArray()) {
+            byte b = (byte) c;
+            char d = (char) b;
             int e = d;
             stringBuilder.append(Long.toHexString((e << 3 + length * length - 16)));
         }

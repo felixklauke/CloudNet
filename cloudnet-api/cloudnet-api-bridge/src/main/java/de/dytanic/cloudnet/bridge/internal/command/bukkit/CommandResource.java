@@ -7,7 +7,6 @@ package de.dytanic.cloudnet.bridge.internal.command.bukkit;
 import de.dytanic.cloudnet.api.CloudAPI;
 import de.dytanic.cloudnet.bridge.CloudServer;
 import de.dytanic.cloudnet.lib.NetworkUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -19,16 +18,14 @@ import java.lang.management.ManagementFactory;
 public class CommandResource
         extends Command {
 
-    public CommandResource()
-    {
+    public CommandResource() {
         super("resource");
         setPermission("cloudnet.command.resource");
     }
 
     @Override
-    public boolean execute(CommandSender sender, String s, String[] strings)
-    {
-        if(!testPermission(sender)) return false;
+    public boolean execute(CommandSender sender, String s, String[] strings) {
+        if (!testPermission(sender)) return false;
         long used = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() / 1048576L;
         long max = Runtime.getRuntime().maxMemory() / 1048576L;
 

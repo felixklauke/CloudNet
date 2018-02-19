@@ -6,7 +6,6 @@ package de.dytanic.cloudnet.bridge.event.bukkit;
 
 import de.dytanic.cloudnet.lib.serverselectors.mob.ServerMob;
 import lombok.AllArgsConstructor;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
@@ -19,19 +18,16 @@ public class BukkitMobUpdateEvent extends BukkitCloudEvent {
 
     private ServerMob serverMob;
 
-    public ServerMob getServerMob()
-    {
+    public static HandlerList getHandlerList() {
+        return handlerList;
+    }
+
+    public ServerMob getServerMob() {
         return serverMob;
     }
 
     @Override
-    public HandlerList getHandlers()
-    {
-        return handlerList;
-    }
-
-    public static HandlerList getHandlerList()
-    {
+    public HandlerList getHandlers() {
         return handlerList;
     }
 }

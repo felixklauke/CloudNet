@@ -6,12 +6,10 @@ package de.dytanic.cloudnetcore.network.components;
 
 import de.dytanic.cloudnet.lib.server.ProxyProcessMeta;
 import de.dytanic.cloudnet.lib.server.info.ProxyInfo;
-import de.dytanic.cloudnet.lib.server.resource.ResourceMeta;
 import de.dytanic.cloudnet.lib.service.ServiceId;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnetcore.network.NetworkInfo;
 import de.dytanic.cloudnetcore.network.packet.out.PacketOutCustomChannelMessage;
-import de.dytanic.cloudnetcore.util.defaults.DefaultResourceMeta;
 import io.netty.channel.Channel;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,8 +40,7 @@ public class ProxyServer
             ProxyProcessMeta processMeta,
             Wrapper wrapper,
             ProxyInfo proxyInfo
-    )
-    {
+    ) {
         this.processMeta = processMeta;
         this.wrapper = wrapper;
         this.serviceId = proxyInfo.getServiceId();
@@ -54,28 +51,23 @@ public class ProxyServer
         this.lastProxyInfo = proxyInfo;
     }
 
-    public void disconnect()
-    {
-        if (this.channel != null)
-        {
+    public void disconnect() {
+        if (this.channel != null) {
             this.channel.close().syncUninterruptibly();
         }
     }
 
-    public void sendCustomMessage(String channel, String message, Document value)
-    {
+    public void sendCustomMessage(String channel, String message, Document value) {
         this.sendPacket(new PacketOutCustomChannelMessage(channel, message, value));
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return serviceId.getServerId();
     }
 
     @Override
-    public String getServerId()
-    {
+    public String getServerId() {
         return serviceId.getServerId();
     }
 }

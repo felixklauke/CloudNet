@@ -20,44 +20,38 @@ public class CloudPermissble extends PermissibleBase {
 
     private UUID unqiueId;
 
-    public CloudPermissble(Player player)
-    {
+    public CloudPermissble(Player player) {
         super(player);
         this.unqiueId = player.getUniqueId();
     }
 
     @Override
-    public boolean isPermissionSet(String name)
-    {
+    public boolean isPermissionSet(String name) {
         return hasPermission(name);
     }
 
     @Override
-    public boolean isPermissionSet(Permission perm)
-    {
+    public boolean isPermissionSet(Permission perm) {
         return hasPermission(perm.getName());
     }
 
     @Override
-    public boolean hasPermission(Permission perm)
-    {
+    public boolean hasPermission(Permission perm) {
         return hasPermission(perm.getName());
     }
 
     @Override
-    public boolean hasPermission(String inName)
-    {
-        if(inName.equalsIgnoreCase("bukkit.broadcast.user")) return true;
+    public boolean hasPermission(String inName) {
+        if (inName.equalsIgnoreCase("bukkit.broadcast.user")) return true;
 
         CloudPlayer cloudPlayer = CloudServer.getInstance().getCloudPlayers().get(this.unqiueId);
-        if(cloudPlayer != null)
-        return cloudPlayer.getPermissionEntity().hasPermission(CloudAPI.getInstance().getPermissionPool(), inName, CloudAPI.getInstance().getGroup());
+        if (cloudPlayer != null)
+            return cloudPlayer.getPermissionEntity().hasPermission(CloudAPI.getInstance().getPermissionPool(), inName, CloudAPI.getInstance().getGroup());
         else
-        return false;
+            return false;
     }
 
-    public UUID getUnqiueId()
-    {
+    public UUID getUnqiueId() {
         return unqiueId;
     }
 }

@@ -14,16 +14,14 @@ public abstract class ObjectiveRunnable<E> implements Runnable {
 
     private E element;
 
-    public ObjectiveRunnable(E element)
-    {
+    public ObjectiveRunnable(E element) {
         this.element = element;
     }
 
     public abstract void run(E e);
 
     @Override
-    public void run()
-    {
+    public void run() {
         run(element);
     }
 }

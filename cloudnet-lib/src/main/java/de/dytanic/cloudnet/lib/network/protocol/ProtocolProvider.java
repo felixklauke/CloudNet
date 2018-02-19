@@ -17,8 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class ProtocolProvider {
 
-    private ProtocolProvider() {}
-
     private static Map<Integer, IProtocol> protocols;
 
     static {
@@ -27,23 +25,22 @@ public final class ProtocolProvider {
         registerProtocol(new FileProtocol());
     }
 
-    public static ProtocolBuffer protocolBuffer(ByteBuf byteBuf)
-    {
+    private ProtocolProvider() {
+    }
+
+    public static ProtocolBuffer protocolBuffer(ByteBuf byteBuf) {
         return new ProtocolBuffer(byteBuf);
     }
 
-    public static void registerProtocol(IProtocol iProtocol)
-    {
+    public static void registerProtocol(IProtocol iProtocol) {
         protocols.put(iProtocol.getId(), iProtocol);
     }
 
-    public static IProtocol getProtocol(int id)
-    {
+    public static IProtocol getProtocol(int id) {
         return protocols.get(id);
     }
 
-    public static Collection<IProtocol> protocols()
-    {
+    public static Collection<IProtocol> protocols() {
         return protocols.values();
     }
 }

@@ -11,10 +11,8 @@ import de.dytanic.cloudnet.lib.exception.JavaReqVersionException;
  */
 public class CloudNetLauncher {
 
-    public static synchronized void main(String[] args) throws Exception
-    {
-        if(Float.parseFloat(System.getProperty("java.class.version")) < 52D)
-        {
+    public static synchronized void main(String[] args) throws Exception {
+        if (Float.parseFloat(System.getProperty("java.class.version")) < 52D) {
             throw new JavaReqVersionException();
         }
 

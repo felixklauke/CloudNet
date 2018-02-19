@@ -9,8 +9,7 @@ package de.dytanic.cloudnet.modules.exception;
  */
 public class ModuleLoadException extends RuntimeException {
 
-    public ModuleLoadException(String message)
-    {
+    public ModuleLoadException(String message) {
         super(message);
     }
 }

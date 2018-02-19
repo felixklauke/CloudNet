@@ -4,8 +4,6 @@
 
 package de.dytanic.cloudnetcore.network.components.priority;
 
-import de.dytanic.cloudnet.lib.utility.Acceptable;
-import de.dytanic.cloudnet.lib.utility.CollectionWrapper;
 import de.dytanic.cloudnet.lib.utility.threading.ScheduledTask;
 import de.dytanic.cloudnetcore.CloudNet;
 import de.dytanic.cloudnetcore.network.components.INetworkComponent;
@@ -14,8 +12,6 @@ import de.dytanic.cloudnetcore.network.components.ProxyServer;
 import de.dytanic.cloudnetcore.network.components.Wrapper;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Collection;
 
 /**
  * Created by Tareko on 20.08.2017.
@@ -32,16 +28,14 @@ public final class PriorityStopTask implements Runnable {
     @Setter
     private ScheduledTask scheduledTask;
 
-    public PriorityStopTask(Wrapper wrapper, INetworkComponent iNetworkComponent, int time)
-    {
+    public PriorityStopTask(Wrapper wrapper, INetworkComponent iNetworkComponent, int time) {
         this.wrapper = wrapper.getServerId();
         this.iNetworkComponent = iNetworkComponent;
         this.time = time;
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
 
         if (iNetworkComponent instanceof ProxyServer)
             if (!getWrapperInstance().getProxys().containsKey(iNetworkComponent.getServerId()) && scheduledTask != null)
@@ -51,8 +45,7 @@ public final class PriorityStopTask implements Runnable {
             if (!getWrapperInstance().getServers().containsKey(iNetworkComponent.getServerId()) && scheduledTask != null)
                 scheduledTask.cancel();
 
-        if (iNetworkComponent.getChannel() != null)
-        {
+        if (iNetworkComponent.getChannel() != null) {
             if (iNetworkComponent instanceof ProxyServer)
                 if (((ProxyServer) iNetworkComponent).getProxyInfo().getOnlineCount() == 0)
                     time--;
@@ -62,8 +55,7 @@ public final class PriorityStopTask implements Runnable {
                     time--;
         }
 
-        if (time == 0)
-        {
+        if (time == 0) {
             if (iNetworkComponent instanceof ProxyServer)
                 getWrapperInstance().stopProxy(((ProxyServer) iNetworkComponent));
 
@@ -75,8 +67,7 @@ public final class PriorityStopTask implements Runnable {
         }
     }
 
-    private Wrapper getWrapperInstance()
-    {
+    private Wrapper getWrapperInstance() {
         return CloudNet.getInstance().getWrappers().get(wrapper);
     }
 

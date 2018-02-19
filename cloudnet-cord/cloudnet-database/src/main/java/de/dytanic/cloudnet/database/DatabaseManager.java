@@ -8,7 +8,8 @@ import de.dytanic.cloudnet.lib.database.Database;
 import lombok.Getter;
 
 import java.io.File;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -16,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Getter
 public class DatabaseManager
-            implements Runnable{
+        implements Runnable {
 
     private final File dir;
     private final Thread thread;
@@ -24,8 +25,7 @@ public class DatabaseManager
 
     private java.util.Map<String, Database> databaseCollection = new ConcurrentHashMap<>();
 
-    public DatabaseManager()
-    {
+    public DatabaseManager() {
         dir = new File("database");
         dir.mkdir();
 
@@ -34,23 +34,19 @@ public class DatabaseManager
         thread.start();
     }
 
-    public List<String> getDatabases()
-    {
+    public List<String> getDatabases() {
         return Arrays.asList(dir.list());
     }
 
-    public Database getDatabase(String name)
-    {
+    public Database getDatabase(String name) {
         Database database = null;
 
-        if(databaseCollection.containsKey(name))
-        {
+        if (databaseCollection.containsKey(name)) {
             return databaseCollection.get(name);
         }
 
         File file = new File("database/" + name);
-        if(!file.exists())
-        {
+        if (!file.exists()) {
             file.mkdir();
         }
 
@@ -60,43 +56,36 @@ public class DatabaseManager
         return database;
     }
 
-    public DatabaseManager save()
-    {
-        for(Database database : databaseCollection.values())
-        {
-            ((DatabaseImpl)database).save();
+    public DatabaseManager save() {
+        for (Database database : databaseCollection.values()) {
+            ((DatabaseImpl) database).save();
         }
         return this;
     }
 
-    public DatabaseManager clear()
-    {
-        for(Database database : databaseCollection.values())
-        {
-            ((DatabaseImpl)database).clear();
+    public DatabaseManager clear() {
+        for (Database database : databaseCollection.values()) {
+            ((DatabaseImpl) database).clear();
         }
         return this;
     }
 
     @Override
-    public void run()
-    {
-        while (true)
-        {
+    public void run() {
+        while (true) {
 
             save();
 
             tick++;
-            if(tick == 6)
-            {
+            if (tick == 6) {
                 clear();
                 tick = 0;
             }
 
-            try
-            {
+            try {
                 Thread.sleep(60000);
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+            }
         }
     }
 }

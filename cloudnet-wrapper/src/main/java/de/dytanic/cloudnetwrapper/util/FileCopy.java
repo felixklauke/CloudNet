@@ -6,9 +6,7 @@
 package de.dytanic.cloudnetwrapper.util;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
@@ -16,13 +14,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class FileCopy {
 
-    private FileCopy()
-    {
+    private FileCopy() {
     }
 
-    public static void copyFileToDirectory(File file, File to) throws IOException
-    {
-        if(to == null || file == null) return;
+    public static void copyFileToDirectory(File file, File to) throws IOException {
+        if (to == null || file == null) return;
 
         if (!to.exists()) to.mkdirs();
 
@@ -30,61 +26,48 @@ public final class FileCopy {
         Files.copy(file.toPath(), n.toPath(), StandardCopyOption.REPLACE_EXISTING);
     }
 
-    public static void copyFilesInDirectory(File from, File to) throws IOException
-    {
-        if(to == null || from == null) return;
+    public static void copyFilesInDirectory(File from, File to) throws IOException {
+        if (to == null || from == null) return;
 
         if (!to.exists()) to.mkdirs();
 
-        for (File file : from.listFiles())
-        {
-            if(file == null) continue;
+        for (File file : from.listFiles()) {
+            if (file == null) continue;
 
-            if (file.isDirectory())
-            {
+            if (file.isDirectory()) {
                 copyFilesInDirectory(file, new File(to.getAbsolutePath() + "/" + file.getName()));
-            } else
-            {
+            } else {
                 File n = new File(to.getAbsolutePath() + "/" + file.getName());
                 Files.copy(file.toPath(), n.toPath(), StandardCopyOption.REPLACE_EXISTING);
             }
         }
     }
 
-    public static final void insertData(String paramString1, String paramString2)
-    {
+    public static final void insertData(String paramString1, String paramString2) {
         InputStream localInputStream = FileCopy.class.getClassLoader().getResourceAsStream(paramString1);
-        try
-        {
+        try {
             Files.copy(localInputStream, Paths.get(paramString2), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void rewriteFileUtils(File file, String host) throws Exception
-    {
+    public static void rewriteFileUtils(File file, String host) throws Exception {
         file.setReadable(true);
         FileInputStream in = new FileInputStream(file);
         List<String> liste = new CopyOnWriteArrayList<>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         String input;
         boolean value = false;
-        while ((input = reader.readLine()) != null)
-        {
-            if (value)
-            {
+        while ((input = reader.readLine()) != null) {
+            if (value) {
                 liste.add("  host: " + host + "\n");
                 value = false;
-            } else
-            {
-                if (input.startsWith("  query_enabled"))
-                {
+            } else {
+                if (input.startsWith("  query_enabled")) {
                     liste.add(input + "\n");
                     value = true;
-                } else
-                {
+                } else {
                     liste.add(input + "\n");
                 }
             }
@@ -94,8 +77,7 @@ public final class FileCopy {
         file.setReadable(true);
         FileOutputStream out = new FileOutputStream(file);
         PrintWriter w = new PrintWriter(out);
-        for (String wert : liste)
-        {
+        for (String wert : liste) {
             w.write(wert);
             w.flush();
         }

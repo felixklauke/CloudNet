@@ -13,8 +13,7 @@ import lombok.Getter;
 @Getter
 public class SRVRecord extends DNSRecord {
 
-    public SRVRecord(String name, String content, String service, String proto, String name_, int priority, int weight, int port, String target)
-    {
+    public SRVRecord(String name, String content, String service, String proto, String name_, int priority, int weight, int port, String target) {
         super(DNSType.SRV.name(), name, content, 1, false, new Document().append("service", service).append("proto", proto).append("name", name_).append("priority", priority).append("weight", weight).append("port", port).append("target", target).obj());
     }
 

@@ -6,7 +6,6 @@ package de.dytanic.cloudnet.bridge.event.bukkit;
 
 import de.dytanic.cloudnet.lib.serverselectors.sign.SignLayoutConfig;
 import lombok.AllArgsConstructor;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
@@ -19,19 +18,16 @@ public class BukkitUpdateSignLayoutsEvent extends BukkitCloudEvent {
 
     private SignLayoutConfig signLayoutConfig;
 
-    public SignLayoutConfig getSignLayoutConfig()
-    {
-        return signLayoutConfig;
-    }
-
-    public static HandlerList getHandlerList()
-    {
+    public static HandlerList getHandlerList() {
         return handlerList;
     }
 
+    public SignLayoutConfig getSignLayoutConfig() {
+        return signLayoutConfig;
+    }
+
     @Override
-    public HandlerList getHandlers()
-    {
+    public HandlerList getHandlers() {
         return handlerList;
     }
 }

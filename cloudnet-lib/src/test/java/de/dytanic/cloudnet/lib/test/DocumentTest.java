@@ -4,8 +4,6 @@
 
 package de.dytanic.cloudnet.lib.test;
 
-import de.dytanic.cloudnet.lib.MultiValue;
-import de.dytanic.cloudnet.lib.Version;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import org.junit.Test;
 
@@ -17,8 +15,7 @@ import java.util.UUID;
 public class DocumentTest {
 
     @Test
-    public void reserve()
-    {
+    public void reserve() {
         Document document = new Document().append("wdfqwaef", UUID.randomUUID());
 
         System.out.println(document.getObject("wdfqwaef", UUID.class));

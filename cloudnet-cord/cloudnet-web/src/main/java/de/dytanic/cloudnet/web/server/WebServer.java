@@ -33,15 +33,13 @@ public class WebServer {
     protected WebServerProvider webServerProvider;
     protected ServerBootstrap serverBootstrap;
 
-    public WebServer(boolean ssl, String host, int port) throws Exception
-    {
+    public WebServer(boolean ssl, String host, int port) throws Exception {
         this.ssl = ssl;
         this.address = host;
         this.port = port;
         this.webServerProvider = new WebServerProvider();
 
-        if (ssl)
-        {
+        if (ssl) {
             SelfSignedCertificate ssc = new SelfSignedCertificate();
             sslContext = SslContext.newServerContext(ssc.certificate(), ssc.privateKey());
         }
@@ -54,8 +52,7 @@ public class WebServer {
                 .channel(NetworkUtils.serverSocketChannel())
                 .childHandler(new ChannelInitializer<Channel>() {
                     @Override
-                    protected void initChannel(Channel channel) throws Exception
-                    {
+                    protected void initChannel(Channel channel) {
                         if (sslContext != null) channel.pipeline().addLast(sslContext.newHandler(channel.alloc()));
 
                         channel.pipeline().addLast(new HttpServerCodec(), new HttpObjectAggregator(Integer.MAX_VALUE), new WebServerHandler(WebServer.this));
@@ -63,20 +60,18 @@ public class WebServer {
                 });
     }
 
-    public void shutdown()
-    {
+    public void shutdown() {
         acceptorGroup.shutdownGracefully();
         workerGroup.shutdownGracefully();
 
         try {
             acceptorGroup.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
             workerGroup.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
-        }catch (InterruptedException ex) {
+        } catch (InterruptedException ex) {
         }
     }
 
-    public void bind() throws Exception
-    {
+    public void bind() throws Exception {
         System.out.println("Bind WebServer at [" + address + ":" + port + "]");
         serverBootstrap.bind(address, port).sync().channel().closeFuture();
     }

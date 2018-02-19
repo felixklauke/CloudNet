@@ -21,51 +21,42 @@ public class CommandInstall extends Command {
 
     private WebClient webClient;
 
-    public CommandInstall()
-    {
+    public CommandInstall() {
         super("install", "cloudnet.command.install");
         webClient = new WebClient();
     }
 
     @Override
-    public void onExecuteCommand(CommandSender sender, String[] args)
-    {
-        switch (args.length)
-        {
+    public void onExecuteCommand(CommandSender sender, String[] args) {
+        switch (args.length) {
             case 1:
-                if(args[0].equalsIgnoreCase("update"))
-                {
+                if (args[0].equalsIgnoreCase("update")) {
                     CloudNet.getInstance().checkForUpdates();
                     return;
                 }
-                if(args[0].equalsIgnoreCase("modules"))
-                {
+                if (args[0].equalsIgnoreCase("modules")) {
                     sender.sendMessage("Installable Modules:");
-                    for(String module : webClient.getInstallableModules())
-                    {
+                    for (String module : webClient.getInstallableModules()) {
                         sender.sendMessage("- " + module);
                     }
                     return;
                 }
-                if(args[0].equalsIgnoreCase("templates"))
-                {
+                if (args[0].equalsIgnoreCase("templates")) {
                     sender.sendMessage("Installable Templates:");
-                    for(String templates : webClient.getInstallableTemplates())
-                    {
+                    for (String templates : webClient.getInstallableTemplates()) {
                         sender.sendMessage("- \"" + WebClient.DEFAULT_URL + "/templates/" + templates + "\"");
                     }
                     sender.sendMessage("Copied the url of the template into the group");
                 }
                 break;
             case 2:
-                if(args[0].equalsIgnoreCase("module"))
-                {
-                    try{
+                if (args[0].equalsIgnoreCase("module")) {
+                    try {
                         URLConnection urlConnection = new URL(WebClient.DEFAULT_URL + "modules/" + args[1]).openConnection();
                         urlConnection.connect();
                         Files.copy(urlConnection.getInputStream(), Paths.get("modules/" + args[1] + ".jar"));
                         sender.sendMessage("Module " + args[1] + " was successfully installed, please use the command \"reload modules\"");
-                    }catch (Exception ex){
+                    } catch (Exception ex) {
                         sender.sendMessage("Failed to download module \"" + args[1] + "\"");
                     }
                 }

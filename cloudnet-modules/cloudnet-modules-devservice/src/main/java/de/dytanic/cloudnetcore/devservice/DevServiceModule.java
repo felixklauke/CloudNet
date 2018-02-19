@@ -16,14 +16,12 @@ public class DevServiceModule extends CoreModule {
     private static DevServiceModule instance;
 
     @Override
-    public void onLoad()
-    {
+    public void onLoad() {
         instance = this;
     }
 
     @Override
-    public void onBootstrap()
-    {
+    public void onBootstrap() {
         getCloud().getNetworkManager().getModuleProperties().append("devservice", true);
     }
 }

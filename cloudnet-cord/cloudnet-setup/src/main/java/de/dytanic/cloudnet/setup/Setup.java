@@ -6,11 +6,8 @@ package de.dytanic.cloudnet.setup;
 
 import de.dytanic.cloudnet.lib.NetworkUtils;
 import de.dytanic.cloudnet.lib.utility.document.Document;
-import de.dytanic.cloudnet.lib.utility.threading.Runnabled;
 import jline.console.ConsoleReader;
-import lombok.Getter;
 
-import java.io.IOException;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -30,69 +27,52 @@ public class Setup implements ISetup {
     private ISetupCancel setupCancel = null;
 
     @Override
-    public void start(ConsoleReader consoleReader)
-    {
+    public void start(ConsoleReader consoleReader) {
         SetupRequest setupRequest = null;
-        while (!requests.isEmpty())
-        {
-            if (setupRequest == null)
-            {
+        while (!requests.isEmpty()) {
+            if (setupRequest == null) {
                 setupRequest = requests.poll();
             }
             System.out.print(setupRequest.getQuestion() + " | " + setupRequest.getResponseType().toString());
 
             String input = null;
-            try
-            {
+            try {
                 input = consoleReader.readLine();
-            } catch (Exception ex)
-            {
+            } catch (Exception ex) {
             }
 
-            if (input.equalsIgnoreCase(CANCEL))
-            {
+            if (input.equalsIgnoreCase(CANCEL)) {
                 if (setupCancel != null) setupCancel.cancel();
                 return;
             }
 
-            if (!input.isEmpty() && !input.equals(" "))
-            {
-                switch (setupRequest.getResponseType())
-                {
+            if (!input.isEmpty() && !input.equals(" ")) {
+                switch (setupRequest.getResponseType()) {
                     case NUMBER:
-                        if(!NetworkUtils.checkIsNumber(input))
-                        {
+                        if (!NetworkUtils.checkIsNumber(input)) {
                             System.out.println(setupRequest.getInValidMessage());
                             continue;
                         }
-                        if(setupRequest.getValidater() != null)
-                        {
-                            if(setupRequest.getValidater().doCatch(input))
-                            {
+                        if (setupRequest.getValidater() != null) {
+                            if (setupRequest.getValidater().doCatch(input)) {
                                 document.append(setupRequest.getName(), Integer.parseInt(input));
                                 setupRequest = null;
-                            }
-                            else
-                            {
+                            } else {
                                 System.out.println(setupRequest.getInValidMessage());
                                 continue;
                             }
-                        }
-                        else
-                        {
+                        } else {
                             document.append(setupRequest.getName(), Integer.parseInt(input));
                             setupRequest = null;
                         }
                         break;
                     case BOOL:
-                        if (input.equalsIgnoreCase("yes") || (setupRequest.getValidater() != null && setupRequest.getValidater().doCatch(input)))
-                        {
+                        if (input.equalsIgnoreCase("yes") || (setupRequest.getValidater() != null && setupRequest.getValidater().doCatch(input))) {
                             document.append(setupRequest.getName(), true);
                             setupRequest = null;
                             continue;
                         }
-                        if (input.equalsIgnoreCase("no") || (setupRequest.getValidater() != null && setupRequest.getValidater().doCatch(input)))
-                        {
+                        if (input.equalsIgnoreCase("no") || (setupRequest.getValidater() != null && setupRequest.getValidater().doCatch(input))) {
                             document.append(setupRequest.getName(), false);
                             setupRequest = null;
                             continue;
@@ -101,28 +81,21 @@ public class Setup implements ISetup {
                         System.out.println(setupRequest.getInValidMessage());
                         break;
                     case STRING:
-                        if(setupRequest.getValidater() != null)
-                        {
-                            if(setupRequest.getValidater().doCatch(input))
-                            {
+                        if (setupRequest.getValidater() != null) {
+                            if (setupRequest.getValidater().doCatch(input)) {
                                 document.append(setupRequest.getName(), input);
                                 setupRequest = null;
-                            }
-                            else
-                            {
+                            } else {
                                 System.out.println(setupRequest.getInValidMessage());
                                 continue;
                             }
-                        }
-                        else
-                        {
+                        } else {
                             document.append(setupRequest.getName(), input);
                             setupRequest = null;
                         }
                         break;
                 }
-            } else
-            {
+            } else {
                 System.out.println(setupRequest.getInValidMessage());
             }
 
@@ -132,20 +105,17 @@ public class Setup implements ISetup {
 
     }
 
-    public Setup request(SetupRequest setupRequest)
-    {
+    public Setup request(SetupRequest setupRequest) {
         requests.offer(setupRequest);
         return this;
     }
 
-    public Setup setupComplete(ISetupComplete iSetupComplete)
-    {
+    public Setup setupComplete(ISetupComplete iSetupComplete) {
         this.setupComplete = iSetupComplete;
         return this;
     }
 
-    public Setup setupCancel(ISetupCancel iSetupCancel)
-    {
+    public Setup setupCancel(ISetupCancel iSetupCancel) {
         this.setupCancel = iSetupCancel;
         return this;
     }

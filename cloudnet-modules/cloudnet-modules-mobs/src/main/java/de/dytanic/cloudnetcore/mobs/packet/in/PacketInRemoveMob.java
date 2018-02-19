@@ -11,7 +11,6 @@ import de.dytanic.cloudnet.lib.serverselectors.mob.ServerMob;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnetcore.CloudNet;
 import de.dytanic.cloudnetcore.mobs.MobModule;
-import de.dytanic.cloudnetcore.mobs.database.MobDatabase;
 
 /**
  * Created by Tareko on 01.09.2017.
@@ -19,9 +18,9 @@ import de.dytanic.cloudnetcore.mobs.database.MobDatabase;
 public class PacketInRemoveMob extends PacketInHandler {
 
     @Override
-    public void handleInput(Document data, PacketSender packetSender)
-    {
-        ServerMob serverMob = data.getObject("mob", new TypeToken<ServerMob>(){}.getType());
+    public void handleInput(Document data, PacketSender packetSender) {
+        ServerMob serverMob = data.getObject("mob", new TypeToken<ServerMob>() {
+        }.getType());
         MobModule.getInstance().getMobDatabase().remove(serverMob);
         CloudNet.getInstance().getNetworkManager().reload();
         CloudNet.getInstance().getNetworkManager().updateAll();

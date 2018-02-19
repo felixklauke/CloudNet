@@ -12,24 +12,18 @@ import de.dytanic.cloudnetcore.network.components.Wrapper;
  */
 public final class CommandInfo extends Command {
 
-    public CommandInfo()
-    {
+    public CommandInfo() {
         super("info", "cloudnet.command.info", "i");
     }
 
     @Override
-    public void onExecuteCommand(CommandSender sender, String[] args)
-    {
-        switch (args.length)
-        {
-            case 2:
-            {
-                switch (args[0].toLowerCase())
-                {
-                    case "server":
-                    {
+    public void onExecuteCommand(CommandSender sender, String[] args) {
+        switch (args.length) {
+            case 2: {
+                switch (args[0].toLowerCase()) {
+                    case "server": {
                         MinecraftServer minecraftServer = CloudNet.getInstance().getServer(args[1]);
-                        if(minecraftServer == null) return;
+                        if (minecraftServer == null) return;
 
                         sender.sendMessage(
                                 " ",
@@ -49,11 +43,10 @@ public final class CommandInfo extends Command {
                                 " "
                         );
                     }
-                        break;
-                    case "proxy":
-                    {
+                    break;
+                    case "proxy": {
                         ProxyServer proxyServer = CloudNet.getInstance().getProxy(args[1]);
-                        if(proxyServer == null) return;
+                        if (proxyServer == null) return;
 
                         sender.sendMessage(
                                 " ",
@@ -72,11 +65,10 @@ public final class CommandInfo extends Command {
                                 " "
                         );
                     }
-                        break;
-                    case "wrapper":
-                    {
+                    break;
+                    case "wrapper": {
                         Wrapper wrapper = CloudNet.getInstance().getWrappers().get(args[1]);
-                        if(wrapper == null) return;
+                        if (wrapper == null) return;
 
                         sender.sendMessage(
                                 " ",
@@ -94,10 +86,10 @@ public final class CommandInfo extends Command {
                         );
 
                     }
-                        break;
+                    break;
                 }
             }
-                break;
+            break;
             default:
                 sender.sendMessage(
                         "info SERVER <server> | monitor all informations about a game server",

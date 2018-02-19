@@ -35,149 +35,114 @@ public abstract class Module<E> extends EventKey {
 
     private ModuleLoader moduleLoader;
 
-    public void onLoad()
-    {
+    public void onLoad() {
     }
 
-    public void onBootstrap()
-    {
+    public void onBootstrap() {
     }
 
-    public void onShutdown()
-    {
+    public void onShutdown() {
     }
 
-    public String getName()
-    {
+    public String getName() {
         return moduleConfig != null ? moduleConfig.getName() : "some_plugin-" + NetworkUtils.RANDOM.nextLong();
     }
 
-    public File getDataFolder()
-    {
-        if (dataFolder == null)
-        {
+    public File getDataFolder() {
+        if (dataFolder == null) {
             dataFolder = new File("modules/" + moduleConfig.getName());
         }
         return dataFolder;
     }
 
-    public String getPluginName()
-    {
+    public String getPluginName() {
         return moduleConfig.getName();
     }
 
-    public String getVersion()
-    {
+    public String getVersion() {
         return moduleConfig.getVersion();
     }
 
-    public String getAuthor()
-    {
+    public String getAuthor() {
         return moduleConfig.getAuthor();
     }
 
-    public Configuration getConfig()
-    {
+    public Configuration getConfig() {
         getDataFolder().mkdir();
-        if (configFile == null)
-        {
+        if (configFile == null) {
             configFile = new File("modules/" + moduleConfig.getName() + "/config.yml");
-            if (!configFile.exists())
-            {
-                try
-                {
+            if (!configFile.exists()) {
+                try {
                     configFile.createNewFile();
-                } catch (IOException e)
-                {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
 
-        if (configuration == null)
-        {
-            try
-            {
+        if (configuration == null) {
+            try {
                 configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
-            } catch (IOException e)
-            {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         return configuration;
     }
 
-    public Module<E> createUtils(Document document)
-    {
-        if (utilFile == null)
-        {
+    public Module<E> createUtils(Document document) {
+        if (utilFile == null) {
             utilFile = new File("modules/" + moduleConfig.getName() + "/utils.json");
-            if (!utilFile.exists())
-            {
+            if (!utilFile.exists()) {
                 document.saveAsConfig(utilFile);
             }
         }
         return this;
     }
 
-    public Document getUtils()
-    {
-        if (utilFile == null)
-        {
+    public Document getUtils() {
+        if (utilFile == null) {
             utilFile = new File("modules/" + moduleConfig.getName() + "/utils.json");
-            if (!utilFile.exists())
-            {
+            if (!utilFile.exists()) {
                 new Document().saveAsConfig(utilFile);
             }
         }
         return Document.loadDocument(utilFile);
     }
 
-    public Module<E> saveUtils(Document document)
-    {
-        if (utilFile == null)
-        {
+    public Module<E> saveUtils(Document document) {
+        if (utilFile == null) {
             utilFile = new File("modules/" + moduleConfig.getName() + "/utils.json");
         }
         document.saveAsConfig(utilFile);
         return this;
     }
 
-    public Module<E> saveConfig()
-    {
-        try
-        {
+    public Module<E> saveConfig() {
+        try {
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(getConfig(), configFile);
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return this;
     }
 
-    public Module<E> loadConfig()
-    {
+    public Module<E> loadConfig() {
         getDataFolder().mkdir();
-        if (configFile == null)
-        {
+        if (configFile == null) {
             configFile = new File("modules/" + moduleConfig.getName() + "/config.yml");
-            if (!configFile.exists())
-            {
-                try
-                {
+            if (!configFile.exists()) {
+                try {
                     configFile.createNewFile();
-                } catch (IOException e)
-                {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
 
-        try
-        {
+        try {
             configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return this;

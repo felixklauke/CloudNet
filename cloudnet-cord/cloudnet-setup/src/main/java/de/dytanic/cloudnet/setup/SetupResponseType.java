@@ -19,10 +19,8 @@ public enum SetupResponseType {
     NUMBER;
 
     @Override
-    public String toString()
-    {
-        switch (this)
-        {
+    public String toString() {
+        switch (this) {
             case BOOL:
                 return "yes : no";
             case STRING:

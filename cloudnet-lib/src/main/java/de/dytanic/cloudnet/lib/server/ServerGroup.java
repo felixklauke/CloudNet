@@ -1,18 +1,20 @@
 package de.dytanic.cloudnet.lib.server;
 
 import com.google.gson.reflect.TypeToken;
-import de.dytanic.cloudnet.lib.server.advanced.AdvancedServerConfig;
-import de.dytanic.cloudnet.lib.map.WrappedMap;
 import de.dytanic.cloudnet.lib.interfaces.Nameable;
+import de.dytanic.cloudnet.lib.map.WrappedMap;
+import de.dytanic.cloudnet.lib.server.advanced.AdvancedServerConfig;
 import de.dytanic.cloudnet.lib.server.priority.PriorityConfig;
+import de.dytanic.cloudnet.lib.server.priority.PriorityService;
 import de.dytanic.cloudnet.lib.server.template.Template;
 import de.dytanic.cloudnet.lib.server.template.TemplateResource;
-import de.dytanic.cloudnet.lib.server.priority.PriorityService;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * Created by Tareko on 21.05.2017.
@@ -20,9 +22,10 @@ import java.util.*;
 @Getter
 @Setter
 public class ServerGroup
-        implements Nameable{
+        implements Nameable {
 
-    public static final Type TYPE = new TypeToken<ServerGroup>(){}.getType();
+    public static final Type TYPE = new TypeToken<ServerGroup>() {
+    }.getType();
 
     protected String name;
     protected Collection<String> wrapper;
@@ -48,8 +51,7 @@ public class ServerGroup
 
     public ServerGroup(String name, Collection<String> wrapper, boolean kickedForceFallback, int memory, int dynamicMemory, int joinPower, boolean maintenance, int startup,
                        int priority, int groupPriority, int priorityStopTime, int onlineCountForPriority, int priorityForGroupOnlineCount, int percentForNewServerAutomatically,
-                       ServerGroupType serverType, ServerGroupMode groupMode, Collection<Template> templates, AdvancedServerConfig advancedServerConfig)
-    {
+                       ServerGroupType serverType, ServerGroupMode groupMode, Collection<Template> templates, AdvancedServerConfig advancedServerConfig) {
         this.name = name;
         this.kickedForceFallback = kickedForceFallback;
         this.wrapper = wrapper;
@@ -76,10 +78,9 @@ public class ServerGroup
         );
 
         this.templates = Arrays.asList(new Template("default", TemplateResource.LOCAL, null, new String[]{}, new ArrayList<>()));
-}
+    }
 
-    public SimpleServerGroup toSimple()
-    {
+    public SimpleServerGroup toSimple() {
         return new SimpleServerGroup(name, kickedForceFallback, joinPower, memory, groupMode, maintenance, percentForNewServerAutomatically, settings, advancedServerConfig);
     }
 }

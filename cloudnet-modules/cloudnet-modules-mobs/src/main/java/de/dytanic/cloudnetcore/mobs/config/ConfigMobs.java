@@ -24,10 +24,8 @@ public class ConfigMobs implements ILoader<MobConfig> {
 
     private final Path path = Paths.get("local/servermob_config.json");
 
-    public ConfigMobs()
-    {
-        if(!Files.exists(path))
-        {
+    public ConfigMobs() {
+        if (!Files.exists(path)) {
             new Document()
                     .append("mobConfig", new MobConfig(54, 10, new MobItemLayout(388, 0,
                             "§6%server%", Arrays.asList(" ", "§e%state%", "§e%online_players% §8/§e%max_players%", "§e%motd%")),
@@ -47,9 +45,9 @@ public class ConfigMobs implements ILoader<MobConfig> {
     }
 
     @Override
-    public MobConfig load()
-    {
-        return Document.loadDocument(path).getObject("mobConfig", new TypeToken<MobConfig>(){}.getType());
+    public MobConfig load() {
+        return Document.loadDocument(path).getObject("mobConfig", new TypeToken<MobConfig>() {
+        }.getType());
     }
 
 }

@@ -19,31 +19,25 @@ public abstract class WebHandler implements Cloneable {
 
     protected String path;
 
-    protected WebHandler(String path)
-    {
+    protected WebHandler(String path) {
         this.path = path;
     }
 
     public abstract FullHttpResponse handleRequest(ChannelHandlerContext channelHandlerContext, QueryDecoder queryDecoder, PathProvider pathProvider, HttpRequest httpRequest) throws Exception;
 
-    public FullHttpResponse newResponse(HttpVersion httpVersion)
-    {
+    public FullHttpResponse newResponse(HttpVersion httpVersion) {
         return new DefaultFullHttpResponse(httpVersion, HttpResponseStatus.NOT_FOUND);
     }
 
-    public FullHttpResponse newResponse(HttpVersion httpVersion, ByteBuf content)
-    {
+    public FullHttpResponse newResponse(HttpVersion httpVersion, ByteBuf content) {
         return new DefaultFullHttpResponse(httpVersion, HttpResponseStatus.NOT_FOUND, content);
     }
 
     @Override
-    public WebHandler clone()
-    {
-        try
-        {
+    public WebHandler clone() {
+        try {
             return (WebHandler) super.clone();
-        } catch (CloneNotSupportedException e)
-        {
+        } catch (CloneNotSupportedException e) {
         }
         return null;
     }

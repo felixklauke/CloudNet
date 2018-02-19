@@ -26,8 +26,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public final class CloudBootstrap {
 
-    public static synchronized void main(String[] args) throws Exception
-    {
+    public static synchronized void main(String[] args) throws Exception {
 
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
 
@@ -60,8 +59,7 @@ public final class CloudBootstrap {
 
         List<String> consolePreInit = new CopyOnWriteArrayList<>();
 
-        if (optionSet.has("help") || optionSet.has("?"))
-        {
+        if (optionSet.has("help") || optionSet.has("?")) {
             HelpService helpService = new HelpService();
             helpService.getDescriptions().put("help", new ServiceDescription[]{new ServiceDescription("--help | --?", "This is the main argument to get all information about other parameters")});
             helpService.getDescriptions().put("ssl", new ServiceDescription[]{new ServiceDescription("--ssl", "Allows SSL encryption via a system-contained certificate or an open SSL certificate")});
@@ -81,8 +79,7 @@ public final class CloudBootstrap {
         if (optionSet.has("systemTimer"))
             new SystemTimer();
 
-        if (optionSet.has("version"))
-        {
+        if (optionSet.has("version")) {
             System.out.println("CloudNet-Core RezSyM Version " + CloudBootstrap.class.getPackage().getImplementationVersion() + "-" + CloudBootstrap.class.getPackage().getSpecificationVersion());
             return;
         }
@@ -92,8 +89,7 @@ public final class CloudBootstrap {
 
         cloudNetLogging.getHandler().add(new ICloudLoggerHandler() {
             @Override
-            public void handleConsole(String input)
-            {
+            public void handleConsole(String input) {
                 if (!CloudNet.RUNNING) consolePreInit.add(input);
             }
         });
@@ -105,38 +101,31 @@ public final class CloudBootstrap {
         if (!cloudNetCore.bootstrap())
             System.exit(0);
 
-        if (!optionSet.has("noconsole"))
-        {
+        if (!optionSet.has("noconsole")) {
             System.out.println("Use the command \"help\" for further information!");
             String commandLine;
             try {
                 while (true)
-                    while ((commandLine = cloudNetLogging.getReader().readLine()) != null && CloudNet.RUNNING)
-                    {
+                    while ((commandLine = cloudNetLogging.getReader().readLine()) != null && CloudNet.RUNNING) {
                         String dispatcher = cloudNetCore.getDbHandlers().getCommandDispatcherDatabase().findDispatcher(commandLine);
-                        if (dispatcher != null)
-                        {
-                            try
-                            {
-                                if (!cloudNetCore.getCommandManager().dispatchCommand(dispatcher))
-                                {
+                        if (dispatcher != null) {
+                            try {
+                                if (!cloudNetCore.getCommandManager().dispatchCommand(dispatcher)) {
                                     continue;
                                 }
-                            }catch (Exception ex) {
+                            } catch (Exception ex) {
                                 ex.printStackTrace();
                             }
                         }
 
-                        if (!cloudNetCore.getCommandManager().dispatchCommand(commandLine))
-                        {
+                        if (!cloudNetCore.getCommandManager().dispatchCommand(commandLine)) {
                             System.out.println("Command not found. Use the command \"help\" for further information!");
                         }
                     }
-            }catch (Exception ex) {
+            } catch (Exception ex) {
 
             }
-        } else
-        {
+        } else {
             while (true) NetworkUtils.sleepUninterruptedly(Long.MAX_VALUE);
         }
     }

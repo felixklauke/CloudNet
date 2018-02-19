@@ -2,17 +2,16 @@ package de.dytanic.cloudnet.lib.network;
 
 import de.dytanic.cloudnet.lib.ConnectableAddress;
 import de.dytanic.cloudnet.lib.NetworkUtils;
+import de.dytanic.cloudnet.lib.network.auth.Auth;
+import de.dytanic.cloudnet.lib.network.auth.packetio.PacketOutAuth;
 import de.dytanic.cloudnet.lib.network.protocol.IProtocol;
 import de.dytanic.cloudnet.lib.network.protocol.ProtocolProvider;
 import de.dytanic.cloudnet.lib.network.protocol.ProtocolRequest;
-import de.dytanic.cloudnet.lib.network.auth.Auth;
+import de.dytanic.cloudnet.lib.network.protocol.packet.Packet;
 import de.dytanic.cloudnet.lib.network.protocol.packet.PacketManager;
 import de.dytanic.cloudnet.lib.network.protocol.packet.PacketSender;
-import de.dytanic.cloudnet.lib.network.auth.packetio.PacketOutAuth;
-import de.dytanic.cloudnet.lib.network.protocol.packet.Packet;
 import de.dytanic.cloudnet3.TaskScheduler;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.*;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
@@ -22,8 +21,6 @@ import lombok.Setter;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Created by Tareko on 22.07.2017.
@@ -31,44 +28,36 @@ import java.util.concurrent.Executors;
 @Getter
 public class NetworkConnection implements PacketSender {
 
+    private final PacketManager packetManager = new PacketManager();
     @Setter(AccessLevel.PROTECTED)
     private Channel channel;
     private ConnectableAddress connectableAddress;
-
     private long connectionTrys = 0;
-
-    private final PacketManager packetManager = new PacketManager();
     private EventLoopGroup eventLoopGroup = NetworkUtils.eventLoopGroup(4);
     private Runnable task;
 
     private SslContext sslContext;
 
-    @Override
-    public String getName()
-    {
-        return "Network-Connector";
-    }
-
-    public NetworkConnection(ConnectableAddress connectableAddress)
-    {
+    public NetworkConnection(ConnectableAddress connectableAddress) {
         this.connectableAddress = connectableAddress;
     }
 
-    public NetworkConnection(ConnectableAddress connectableAddress, Runnable task)
-    {
+    public NetworkConnection(ConnectableAddress connectableAddress, Runnable task) {
         this.connectableAddress = connectableAddress;
         this.task = task;
     }
 
-    public boolean tryConnect(boolean ssl, SimpleChannelInboundHandler<Packet> default_handler, Auth auth)
-    {
+    @Override
+    public String getName() {
+        return "Network-Connector";
+    }
+
+    public boolean tryConnect(boolean ssl, SimpleChannelInboundHandler<Packet> default_handler, Auth auth) {
         return tryConnect(ssl, default_handler, auth, null);
     }
 
-    public boolean tryConnect(boolean ssl, SimpleChannelInboundHandler<Packet> default_handler, Auth auth, Runnable cancelTask)
-    {
-        try
-        {
+    public boolean tryConnect(boolean ssl, SimpleChannelInboundHandler<Packet> default_handler, Auth auth, Runnable cancelTask) {
+        try {
             eventLoopGroup = NetworkUtils.eventLoopGroup(4);
             if (ssl) sslContext = SslContext.newClientContext(InsecureTrustManagerFactory.INSTANCE);
 
@@ -81,8 +70,7 @@ public class NetworkConnection implements PacketSender {
                     .handler(new ChannelInitializer<Channel>() {
 
                         @Override
-                        protected void initChannel(Channel channel) throws Exception
-                        {
+                        protected void initChannel(Channel channel) {
 
                             if (sslContext != null)
                                 channel.pipeline().addLast(sslContext.newHandler(channel.alloc(), connectableAddress.getHostName(), connectableAddress.getPort()));
@@ -95,19 +83,17 @@ public class NetworkConnection implements PacketSender {
             this.channel = bootstrap.connect(connectableAddress.getHostName(), connectableAddress.getPort()).sync().channel().writeAndFlush(new PacketOutAuth(auth)).syncUninterruptibly().channel();
 
             return true;
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
             connectionTrys++;
             System.out.println("Failed to connect... [" + connectionTrys + "]");
             System.out.println("Error: " + ex.getMessage());
 
-            if(eventLoopGroup != null)
+            if (eventLoopGroup != null)
                 eventLoopGroup.shutdownGracefully();
 
             eventLoopGroup = null;
 
-            if (cancelTask != null)
-            {
+            if (cancelTask != null) {
                 cancelTask.run();
             }
 
@@ -115,40 +101,33 @@ public class NetworkConnection implements PacketSender {
         }
     }
 
-    public boolean tryDisconnect()
-    {
-        if(channel != null)
-        channel.close();
+    public boolean tryDisconnect() {
+        if (channel != null)
+            channel.close();
         eventLoopGroup.shutdownGracefully();
         return false;
     }
 
-    public void sendFile(Path path)
-    {
+    public void sendFile(Path path) {
         send(ProtocolProvider.getProtocol(2), path);
     }
 
-    public void sendFile(File file)
-    {
+    public void sendFile(File file) {
         send(ProtocolProvider.getProtocol(2), file);
     }
 
     @Override
-    public void sendPacket(Packet... packets)
-    {
+    public void sendPacket(Packet... packets) {
 
         if (channel == null) return;
 
-        if (channel.eventLoop().inEventLoop())
-        {
+        if (channel.eventLoop().inEventLoop()) {
             for (Packet packet : packets)
                 channel.writeAndFlush(packet);
-        } else
-        {
+        } else {
             channel.eventLoop().execute(new Runnable() {
                 @Override
-                public void run()
-                {
+                public void run() {
                     for (Packet packet : packets)
                         channel.writeAndFlush(packet);
                 }
@@ -156,25 +135,20 @@ public class NetworkConnection implements PacketSender {
         }
     }
 
-    public boolean isConnected()
-    {
+    public boolean isConnected() {
         return channel != null;
     }
 
     @Override
-    public void sendPacketSynchronized(Packet packet)
-    {
+    public void sendPacketSynchronized(Packet packet) {
         if (channel == null) return;
 
-        if (channel.eventLoop().inEventLoop())
-        {
+        if (channel.eventLoop().inEventLoop()) {
             channel.writeAndFlush(packet).syncUninterruptibly();
-        } else
-        {
+        } else {
             channel.eventLoop().execute(new Runnable() {
                 @Override
-                public void run()
-                {
+                public void run() {
                     channel.writeAndFlush(packet).syncUninterruptibly();
                 }
             });
@@ -182,19 +156,15 @@ public class NetworkConnection implements PacketSender {
     }
 
     @Override
-    public void sendPacket(Packet packet)
-    {
+    public void sendPacket(Packet packet) {
         if (channel == null) return;
 
-        if (channel.eventLoop().inEventLoop())
-        {
+        if (channel.eventLoop().inEventLoop()) {
             channel.writeAndFlush(packet);
-        } else
-        {
+        } else {
             channel.eventLoop().execute(new Runnable() {
                 @Override
-                public void run()
-                {
+                public void run() {
                     channel.writeAndFlush(packet);
                 }
             });
@@ -202,19 +172,15 @@ public class NetworkConnection implements PacketSender {
     }
 
     @Override
-    public void send(Object object)
-    {
+    public void send(Object object) {
         if (channel == null) return;
 
-        if (channel.eventLoop().inEventLoop())
-        {
+        if (channel.eventLoop().inEventLoop()) {
             channel.writeAndFlush(object);
-        } else
-        {
+        } else {
             channel.eventLoop().execute(new Runnable() {
                 @Override
-                public void run()
-                {
+                public void run() {
                     channel.writeAndFlush(object);
                 }
             });
@@ -222,56 +188,47 @@ public class NetworkConnection implements PacketSender {
     }
 
     @Override
-    public void sendSynchronized(Object object)
-    {
+    public void sendSynchronized(Object object) {
         channel.writeAndFlush(object).syncUninterruptibly();
     }
 
     @Override
-    public void sendAsynchronized(Object object)
-    {
+    public void sendAsynchronized(Object object) {
         TaskScheduler.runtimeScheduler().schedule(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 channel.writeAndFlush(object);
             }
         });
     }
 
     @Override
-    public void send(IProtocol iProtocol, Object element)
-    {
+    public void send(IProtocol iProtocol, Object element) {
         send(new ProtocolRequest(iProtocol.getId(), element));
     }
 
     @Override
-    public void send(int id, Object element)
-    {
+    public void send(int id, Object element) {
         send(new ProtocolRequest(id, element));
     }
 
     @Override
-    public void sendAsynchronized(int id, Object element)
-    {
+    public void sendAsynchronized(int id, Object element) {
         sendAsynchronized(new ProtocolRequest(id, element));
     }
 
     @Override
-    public void sendAsynchronized(IProtocol iProtocol, Object element)
-    {
+    public void sendAsynchronized(IProtocol iProtocol, Object element) {
         sendAsynchronized(new ProtocolRequest(iProtocol.getId(), element));
     }
 
     @Override
-    public void sendSynchronized(int id, Object element)
-    {
+    public void sendSynchronized(int id, Object element) {
         sendSynchronized(new ProtocolRequest(id, element));
     }
 
     @Override
-    public void sendSynchronized(IProtocol iProtocol, Object element)
-    {
+    public void sendSynchronized(IProtocol iProtocol, Object element) {
         sendSynchronized(new ProtocolRequest(iProtocol.getId(), element));
     }
 }

@@ -12,7 +12,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * Created by Tareko on 26.08.2017.
@@ -22,8 +21,7 @@ public final class ChatListener implements Listener {
     private final boolean permissionService = CloudAPI.getInstance().getPermissionPool() != null;
 
     @EventHandler
-    public void handle(AsyncPlayerChatEvent e)
-    {
+    public void handle(AsyncPlayerChatEvent e) {
         PermissionGroup permissionGroup = permissionService ? CloudServer.getInstance()
                 .getCachedPlayer(e.getPlayer().getUniqueId()).getPermissionEntity().getHighestPermissionGroup(CloudAPI.getInstance().getPermissionPool())
                 :

@@ -18,31 +18,24 @@ public class HeaderFunction {
 
     private boolean executed = false;
 
-    public HeaderFunction()
-    {
+    public HeaderFunction() {
         File file = new File("HEADER.txt");
-        if(file.exists())
-        {
+        if (file.exists()) {
             executed = true;
-            try(InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader)){
+            try (InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
+                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
 
                 String input;
-                while ((input = bufferedReader.readLine()) != null)
-                {
+                while ((input = bufferedReader.readLine()) != null) {
                     System.out.println(input);
                 }
                 NetworkUtils.headerOut();
-            } catch (FileNotFoundException e)
-            {
+            } catch (FileNotFoundException e) {
                 e.printStackTrace();
-            } catch (IOException e)
-            {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        else
-        {
+        } else {
             NetworkUtils.header();
         }
     }

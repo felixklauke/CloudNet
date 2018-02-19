@@ -3,10 +3,8 @@ package de.dytanic.cloudnet3;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Created by Tareko on 19.01.2018.
@@ -15,9 +13,8 @@ import java.util.concurrent.TimeoutException;
 @AllArgsConstructor
 public class TaskEntryFuture<T> implements Future<T> {
 
-    private TaskEntry<T> entry;
-
     protected volatile boolean waits;
+    private TaskEntry<T> entry;
 
     @Override
     public boolean cancel(boolean pMayInterruptIfRunning) {
@@ -35,17 +32,14 @@ public class TaskEntryFuture<T> implements Future<T> {
     }
 
 
-
     @Override
     public boolean isDone() {
         return entry.completed;
     }
 
 
-
     @Override
-    public synchronized T get() throws InterruptedException, ExecutionException
-    {
+    public synchronized T get() throws InterruptedException {
         waits = true;
         while (!isDone()) this.wait();
 
@@ -53,10 +47,8 @@ public class TaskEntryFuture<T> implements Future<T> {
     }
 
 
-
     @Override
-    public synchronized T get(long pTimeout, TimeUnit pUnit) throws InterruptedException, ExecutionException, TimeoutException
-    {
+    public synchronized T get(long pTimeout, TimeUnit pUnit) throws InterruptedException {
 
         waits = true;
         /*

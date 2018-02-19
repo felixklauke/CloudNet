@@ -23,42 +23,33 @@ public final class ServerLogManager implements Runnable {
 
     private final NetorHashMap<String, MultiValue<String, Long>, Collection<ScreenInfo>> screenInfos = new NetorHashMap<>();
 
-    public void append(String rnd, String serverId)
-    {
-        for (String key : screenInfos.keySet())
-        {
-            if(this.screenInfos.getF(key).getFirst().equals(serverId))
-            {
+    public void append(String rnd, String serverId) {
+        for (String key : screenInfos.keySet()) {
+            if (this.screenInfos.getF(key).getFirst().equals(serverId)) {
                 screenInfos.add(rnd, new MultiValue<>(serverId, (System.currentTimeMillis() + 600000L)), new ConcurrentLinkedQueue<>(this.screenInfos.getS(key)));
                 return;
             }
         }
 
         MinecraftServer minecraftServer = CloudNet.getInstance().getServer(serverId);
-        if(minecraftServer != null)
-        {
+        if (minecraftServer != null) {
             minecraftServer.getWrapper().enableScreen(minecraftServer.getServerInfo());
             screenInfos.add(rnd, new MultiValue<>(serverId, (System.currentTimeMillis() + 600000L)), new ConcurrentLinkedQueue<>());
             return;
         }
 
         ProxyServer proxyServer = CloudNet.getInstance().getProxy(serverId);
-        if(proxyServer != null)
-        {
+        if (proxyServer != null) {
             proxyServer.getWrapper().enableScreen(proxyServer.getProxyInfo());
             screenInfos.add(rnd, new MultiValue<>(serverId, (System.currentTimeMillis() + 600000L)), new ConcurrentLinkedQueue<>());
         }
     }
 
-    public void appendScreenData(Collection<ScreenInfo> screenInfos)
-    {
-        if(screenInfos.size() != 0)
-            for(ScreenInfo screenInfo : screenInfos)
-            {
-                for(String key : this.screenInfos.keySet())
-                {
-                    if(this.screenInfos.getF(key).getFirst().equalsIgnoreCase(screenInfo.getServiceId().getServerId()))
-                    {
+    public void appendScreenData(Collection<ScreenInfo> screenInfos) {
+        if (screenInfos.size() != 0)
+            for (ScreenInfo screenInfo : screenInfos) {
+                for (String key : this.screenInfos.keySet()) {
+                    if (this.screenInfos.getF(key).getFirst().equalsIgnoreCase(screenInfo.getServiceId().getServerId())) {
                         this.screenInfos.getS(key).addAll(screenInfos);
                     }
                 }
@@ -66,13 +57,12 @@ public final class ServerLogManager implements Runnable {
             }
     }
 
-    public String dispatch(String rnd)
-    {
-        if(!this.screenInfos.contains(rnd)) return null;
+    public String dispatch(String rnd) {
+        if (!this.screenInfos.contains(rnd)) return null;
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        for(ScreenInfo screenInfo : this.screenInfos.getS(rnd))
+        for (ScreenInfo screenInfo : this.screenInfos.getS(rnd))
             stringBuilder.append("<p>").append(screenInfo.getLine()).append("</p>");
 
         return stringBuilder.toString();
@@ -80,19 +70,17 @@ public final class ServerLogManager implements Runnable {
 
     @Deprecated
     @Override
-    public void run()
-    {
-        for(String key : screenInfos.keySet())
-            if(screenInfos.getF(key).getSecond() < System.currentTimeMillis())
-            {
+    public void run() {
+        for (String key : screenInfos.keySet())
+            if (screenInfos.getF(key).getSecond() < System.currentTimeMillis()) {
                 String server = screenInfos.getF(key).getFirst();
 
                 MinecraftServer minecraftServer = CloudNet.getInstance().getServer(server);
-                if(minecraftServer != null)
+                if (minecraftServer != null)
                     minecraftServer.getWrapper().disableScreen(minecraftServer.getServerInfo());
 
                 ProxyServer proxyServer = CloudNet.getInstance().getProxy(server);
-                if(proxyServer != null)
+                if (proxyServer != null)
                     proxyServer.getWrapper().disableScreen(proxyServer.getProxyInfo());
 
                 screenInfos.remove(key);

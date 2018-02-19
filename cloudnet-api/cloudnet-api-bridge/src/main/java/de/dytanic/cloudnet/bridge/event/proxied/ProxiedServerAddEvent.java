@@ -6,7 +6,6 @@ package de.dytanic.cloudnet.bridge.event.proxied;
 
 import de.dytanic.cloudnet.lib.server.info.ServerInfo;
 import lombok.AllArgsConstructor;
-import net.md_5.bungee.api.plugin.Event;
 
 /**
  * Calls if a game server was add into the network
@@ -16,8 +15,7 @@ public class ProxiedServerAddEvent extends ProxiedCloudEvent {
 
     private ServerInfo serverInfo;
 
-    public ServerInfo getServerInfo()
-    {
+    public ServerInfo getServerInfo() {
         return serverInfo;
     }
 }

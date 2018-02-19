@@ -1,9 +1,8 @@
 package de.dytanic.cloudnet.lib.server.info;
 
-import de.dytanic.cloudnet.lib.server.template.Template;
-import de.dytanic.cloudnet.lib.utility.document.Document;
 import de.dytanic.cloudnet.lib.server.ServerConfig;
 import de.dytanic.cloudnet.lib.server.ServerState;
+import de.dytanic.cloudnet.lib.server.template.Template;
 import de.dytanic.cloudnet.lib.service.ServiceId;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,18 +30,16 @@ public class ServerInfo {
     private ServerConfig serverConfig;
     private Template template;
 
-    public boolean isIngame()
-    {
+    public boolean isIngame() {
 
-        if(serverState == null) serverState = ServerState.LOBBY;
+        if (serverState == null) serverState = ServerState.LOBBY;
 
-        if(motd == null) motd = "null";
+        if (motd == null) motd = "null";
 
         return serverState == ServerState.INGAME || (motd.equalsIgnoreCase("INGAME") || motd.equalsIgnoreCase("RUNNING"));
     }
 
-    public SimpleServerInfo toSimple()
-    {
+    public SimpleServerInfo toSimple() {
         return new SimpleServerInfo(serviceId, host, port, onlineCount, maxPlayers);
     }
 

@@ -6,13 +6,12 @@ package de.dytanic.cloudnet.lib.network.protocol.packet;
 
 import com.google.gson.reflect.TypeToken;
 import de.dytanic.cloudnet.lib.NetworkUtils;
-import de.dytanic.cloudnet.lib.network.protocol.ProtocolStream;
 import de.dytanic.cloudnet.lib.network.protocol.ProtocolBuffer;
+import de.dytanic.cloudnet.lib.network.protocol.ProtocolStream;
 import de.dytanic.cloudnet.lib.utility.document.Document;
 import lombok.NonNull;
 
 import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 /**
@@ -20,53 +19,46 @@ import java.util.UUID;
  */
 public class Packet extends ProtocolStream {
 
-    private static final Type TYPE = new TypeToken<Packet>(){}.getType();
+    private static final Type TYPE = new TypeToken<Packet>() {
+    }.getType();
 
     protected int id;
     protected Document data;
     protected UUID uniqueId;
 
-    public Packet()
-    {
+    public Packet() {
     }
 
-    public Packet(int id)
-    {
+    public Packet(int id) {
         this.id = id;
         this.data = new Document();
     }
 
-    public Packet(@NonNull Document data)
-    {
+    public Packet(@NonNull Document data) {
         this.data = data;
         this.id = 0;
     }
 
-    public Packet(int id, @NonNull Document data)
-    {
+    public Packet(int id, @NonNull Document data) {
         this.id = id;
         this.data = data;
     }
 
-    public Packet(UUID uniqueId, int id, @NonNull Document data)
-    {
+    public Packet(UUID uniqueId, int id, @NonNull Document data) {
         this.uniqueId = uniqueId;
         this.id = id;
         this.data = data;
     }
 
     @Override
-    public void write(ProtocolBuffer outPut) throws Exception
-    {
+    public void write(ProtocolBuffer outPut) {
         outPut.writeString(NetworkUtils.GSON.toJson(this));
     }
 
     @Override
-    public void read(ProtocolBuffer in) throws Exception
-    {
+    public void read(ProtocolBuffer in) {
         int vx = in.readableBytes();
-        if (vx != 0)
-        {
+        if (vx != 0) {
             String input = in.readString();
             Packet packet = NetworkUtils.GSON.fromJson(input, TYPE);
             this.uniqueId = packet.uniqueId;

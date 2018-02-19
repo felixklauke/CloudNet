@@ -15,7 +15,6 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
@@ -45,21 +44,17 @@ public class MasterTemplateDeploy {
 
     private String customName;
 
-    public void deploy() throws Exception
-    {
+    public void deploy() throws Exception {
         System.out.println("Trying to setup the new template... [" + template.getName() + "]");
         Path file = Paths.get("local/cache/" + NetworkUtils.randomString(10) + ".zip");
-        if (!Files.exists(file))
-        {
+        if (!Files.exists(file)) {
             Files.createFile(file);
         }
         Path dir = Paths.get("local/cache/" + NetworkUtils.randomString(10));
-        try
-        {
+        try {
             FileCopy.copyFilesInDirectory(new File(this.dir), dir.toFile());
             new File(dir.toString() + "/plugins/CloudNetAPI.jar").delete();
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
         }
 
         zipFolder(dir, file);
@@ -79,51 +74,42 @@ public class MasterTemplateDeploy {
         urlConnection.setDoOutput(true);
         urlConnection.connect();
         System.out.println("Connected and deployed template... [" + template.getName() + "]");
-        try (OutputStream outputStream = urlConnection.getOutputStream())
-        {
+        try (OutputStream outputStream = urlConnection.getOutputStream()) {
             byte[] data = new byte[16344];
-            try(InputStream inputStream = Files.newInputStream(file))
-            {
-                while (inputStream.read(data) != -1)
-                {
+            try (InputStream inputStream = Files.newInputStream(file)) {
+                while (inputStream.read(data) != -1) {
                     outputStream.write(data);
                     outputStream.flush();
                 }
             }
         }
-        try(InputStream inputStream = urlConnection.getInputStream(); BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)))
-        {
+        try (InputStream inputStream = urlConnection.getInputStream(); BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             String input;
-            while ((input = bufferedReader.readLine()) != null);
+            while ((input = bufferedReader.readLine()) != null) ;
         }
         System.out.println("Successfully deploy template [" + template.getName() + "]");
         urlConnection.disconnect();
-        try
-        {
+        try {
             FileUtils.deleteDirectory(dir.toFile());
-        }catch (Exception ex) {
+        } catch (Exception ex) {
 
         }
         Files.deleteIfExists(file);
     }
 
-    private void zipFolder(Path sourceFolderPath, Path zipPath) throws Exception
-    {
+    private void zipFolder(Path sourceFolderPath, Path zipPath) throws Exception {
         ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipPath.toFile()));
         Files.walkFileTree(
                 sourceFolderPath,
                 EnumSet.noneOf(FileVisitOption.class),
                 Integer.MAX_VALUE,
                 new SimpleFileVisitor<Path>() {
-                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
-                    {
-                        try
-                        {
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                        try {
                             zos.putNextEntry(new ZipEntry(sourceFolderPath.relativize(file).toString()));
                             Files.copy(file, zos);
                             zos.closeEntry();
-                        } catch (Exception ex)
-                        {
+                        } catch (Exception ex) {
                             zos.closeEntry();
                         }
                         return FileVisitResult.CONTINUE;

@@ -13,25 +13,21 @@ import org.bukkit.command.CommandSender;
  */
 public class CommandCloudDeploy extends Command {
 
-    public CommandCloudDeploy()
-    {
+    public CommandCloudDeploy() {
         super("cdeploy");
         setPermission("cloudnet.command.cdeploy");
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String s, String[] args)
-    {
-        if(!testPermission(commandSender)) return false;
+    public boolean execute(CommandSender commandSender, String s, String[] args) {
+        if (!testPermission(commandSender)) return false;
 
-        switch (args.length)
-        {
-            case 1:
-            {
+        switch (args.length) {
+            case 1: {
                 CloudAPI.getInstance().sendCloudCommand("copy " + CloudAPI.getInstance().getServerId() + " " + args[0]);
                 commandSender.sendMessage(CloudAPI.getInstance().getPrefix() + "Server will be deployed to " + args[0]);
             }
-                break;
+            break;
             default:
                 commandSender.sendMessage(CloudAPI.getInstance().getPrefix() + "/cdeploy <template>");
                 break;

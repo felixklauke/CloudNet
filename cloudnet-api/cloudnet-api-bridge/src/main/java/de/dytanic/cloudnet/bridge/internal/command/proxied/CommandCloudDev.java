@@ -6,7 +6,6 @@ package de.dytanic.cloudnet.bridge.internal.command.proxied;
 
 import de.dytanic.cloudnet.api.CloudAPI;
 import de.dytanic.cloudnet.bridge.CloudProxy;
-import de.dytanic.cloudnet.bridge.CloudServer;
 import de.dytanic.cloudnet.lib.NetworkUtils;
 import de.dytanic.cloudnet.lib.server.ServerConfig;
 import de.dytanic.cloudnet.lib.server.ServerGroup;
@@ -30,25 +29,19 @@ import java.util.Properties;
  */
 public final class CommandCloudDev extends Command implements TabExecutor {
 
-    public CommandCloudDev()
-    {
+    public CommandCloudDev() {
         super("cdev", "cloudnet.command.cdev");
     }
 
     @Override
-    public void execute(CommandSender commandSender, String[] args)
-    {
+    public void execute(CommandSender commandSender, String[] args) {
         if (!(commandSender instanceof ProxiedPlayer)) return;
-        switch (args.length)
-        {
+        switch (args.length) {
             case 0:
-                for (ServerInfo serverInfo : CloudProxy.getInstance().getCachedServers().values())
-                {
-                    if (serverInfo.getServerConfig().getProperties().contains(NetworkUtils.DEV_PROPERTY))
-                    {
+                for (ServerInfo serverInfo : CloudProxy.getInstance().getCachedServers().values()) {
+                    if (serverInfo.getServerConfig().getProperties().contains(NetworkUtils.DEV_PROPERTY)) {
                         DevService service = serverInfo.getServerConfig().getProperties().getObject(NetworkUtils.DEV_PROPERTY, DevService.class);
-                        if (service.getUniqueId().equals(((ProxiedPlayer) commandSender).getUniqueId()))
-                        {
+                        if (service.getUniqueId().equals(((ProxiedPlayer) commandSender).getUniqueId())) {
                             ((ProxiedPlayer) commandSender).connect(ProxyServer.getInstance().getServerInfo(serverInfo.getServiceId().getServerId()));
                             return;
                         }
@@ -59,24 +52,18 @@ public final class CommandCloudDev extends Command implements TabExecutor {
                 commandSender.sendMessage(CloudAPI.getInstance().getPrefix() + "/cdev testServer <group>");
                 commandSender.sendMessage(CloudAPI.getInstance().getPrefix() + "/cdev testServer <group> <template>");
                 break;
-            case 2:
-            {
-                for (ServerInfo serverInfo : CloudProxy.getInstance().getCachedServers().values())
-                {
-                    if (serverInfo.getServerConfig().getProperties().contains(NetworkUtils.DEV_PROPERTY))
-                    {
+            case 2: {
+                for (ServerInfo serverInfo : CloudProxy.getInstance().getCachedServers().values()) {
+                    if (serverInfo.getServerConfig().getProperties().contains(NetworkUtils.DEV_PROPERTY)) {
                         DevService service = serverInfo.getServerConfig().getProperties().getObject(NetworkUtils.DEV_PROPERTY, DevService.class);
-                        if (service.getUniqueId().equals(((ProxiedPlayer) commandSender).getUniqueId()))
-                        {
+                        if (service.getUniqueId().equals(((ProxiedPlayer) commandSender).getUniqueId())) {
                             ((ProxiedPlayer) commandSender).connect(ProxyServer.getInstance().getServerInfo(serverInfo.getServiceId().getServerId()));
                             return;
                         }
                     }
                 }
-                if (args[0].equalsIgnoreCase("forTemplate"))
-                {
-                    if (!CloudAPI.getInstance().getServerGroupMap().containsKey(args[1]))
-                    {
+                if (args[0].equalsIgnoreCase("forTemplate")) {
+                    if (!CloudAPI.getInstance().getServerGroupMap().containsKey(args[1])) {
                         commandSender.sendMessage(CloudAPI.getInstance().getPrefix() + "The group doesn't exist");
                         return;
                     }
@@ -84,40 +71,32 @@ public final class CommandCloudDev extends Command implements TabExecutor {
                             ProxiedPlayer
                             ) commandSender).getUniqueId(), true)), System.currentTimeMillis());
                     CloudAPI.getInstance().startGameServer(CloudAPI.getInstance().getServerGroupData(args[1]), serverConfig, "Dev" + args[1] + "-" + commandSender.getName());
-                    ((ProxiedPlayer) commandSender).sendMessage(CloudAPI.getInstance().getPrefix() + "The server will start up now...");
+                    commandSender.sendMessage(CloudAPI.getInstance().getPrefix() + "The server will start up now...");
                     return;
                 }
-                if (args[0].equalsIgnoreCase("testServer"))
-                {
-                    if (!CloudAPI.getInstance().getServerGroupMap().containsKey(args[1]))
-                    {
+                if (args[0].equalsIgnoreCase("testServer")) {
+                    if (!CloudAPI.getInstance().getServerGroupMap().containsKey(args[1])) {
                         commandSender.sendMessage(CloudAPI.getInstance().getPrefix() + "The group doesn't exist");
                         return;
                     }
                     ServerConfig serverConfig = new ServerConfig(true, commandSender.getName(), new Document(), System.currentTimeMillis());
                     CloudAPI.getInstance().startCloudServer("TestServer-" + ((ProxiedPlayer) commandSender).getUniqueId(), serverConfig, 356, true);
-                    ((ProxiedPlayer) commandSender).sendMessage(CloudAPI.getInstance().getPrefix() + "The server will start up now...");
+                    commandSender.sendMessage(CloudAPI.getInstance().getPrefix() + "The server will start up now...");
                     return;
                 }
             }
-            case 3:
-            {
-                for (ServerInfo serverInfo : CloudProxy.getInstance().getCachedServers().values())
-                {
-                    if (serverInfo.getServerConfig().getProperties().contains(NetworkUtils.DEV_PROPERTY))
-                    {
+            case 3: {
+                for (ServerInfo serverInfo : CloudProxy.getInstance().getCachedServers().values()) {
+                    if (serverInfo.getServerConfig().getProperties().contains(NetworkUtils.DEV_PROPERTY)) {
                         DevService service = serverInfo.getServerConfig().getProperties().getObject(NetworkUtils.DEV_PROPERTY, DevService.class);
-                        if (service.getUniqueId().equals(((ProxiedPlayer) commandSender).getUniqueId()))
-                        {
+                        if (service.getUniqueId().equals(((ProxiedPlayer) commandSender).getUniqueId())) {
                             ((ProxiedPlayer) commandSender).connect(ProxyServer.getInstance().getServerInfo(serverInfo.getServiceId().getServerId()));
                             return;
                         }
                     }
                 }
-                if (args[0].equalsIgnoreCase("forTemplate"))
-                {
-                    if (!CloudAPI.getInstance().getServerGroupMap().containsKey(args[1]))
-                    {
+                if (args[0].equalsIgnoreCase("forTemplate")) {
+                    if (!CloudAPI.getInstance().getServerGroupMap().containsKey(args[1])) {
                         commandSender.sendMessage(CloudAPI.getInstance().getPrefix() + "The group doesn't exist");
                         return;
                     }
@@ -125,12 +104,10 @@ public final class CommandCloudDev extends Command implements TabExecutor {
                     ServerGroup serverGroup = CloudAPI.getInstance().getServerGroup(args[1]);
                     if (CollectionWrapper.filter(serverGroup.getTemplates(), new Acceptable<Template>() {
                         @Override
-                        public boolean isAccepted(Template template)
-                        {
+                        public boolean isAccepted(Template template) {
                             return template.getName().equalsIgnoreCase(args[2]);
                         }
-                    }) == null)
-                    {
+                    }) == null) {
                         commandSender.sendMessage(CloudAPI.getInstance().getPrefix() + "The template doesn't exist");
                         return;
                     }
@@ -141,18 +118,15 @@ public final class CommandCloudDev extends Command implements TabExecutor {
                     CloudAPI.getInstance().startGameServer(CloudAPI.getInstance().getServerGroupData(args[1]), serverConfig, CloudAPI.getInstance().getServerGroupData(args[1]).getMemory(),
                             true, new Properties(), CollectionWrapper.filter(serverGroup.getTemplates(), new Acceptable<Template>() {
                                 @Override
-                                public boolean isAccepted(Template e)
-                                {
+                                public boolean isAccepted(Template e) {
                                     return e.getName().equalsIgnoreCase(args[2]);
                                 }
                             }), "Dev" + args[1] + "-" + commandSender.getName());
-                    ((ProxiedPlayer) commandSender).sendMessage(CloudAPI.getInstance().getPrefix() + "The server will start up now...");
+                    commandSender.sendMessage(CloudAPI.getInstance().getPrefix() + "The server will start up now...");
                     return;
                 }
-                if (args[0].equalsIgnoreCase("testServer"))
-                {
-                    if (!CloudAPI.getInstance().getServerGroupMap().containsKey(args[1]))
-                    {
+                if (args[0].equalsIgnoreCase("testServer")) {
+                    if (!CloudAPI.getInstance().getServerGroupMap().containsKey(args[1])) {
                         commandSender.sendMessage(CloudAPI.getInstance().getPrefix() + "The group doesn't exist");
                         return;
                     }
@@ -160,12 +134,10 @@ public final class CommandCloudDev extends Command implements TabExecutor {
                     ServerGroup serverGroup = CloudAPI.getInstance().getServerGroup(args[1]);
                     if (CollectionWrapper.filter(serverGroup.getTemplates(), new Acceptable<Template>() {
                         @Override
-                        public boolean isAccepted(Template template)
-                        {
+                        public boolean isAccepted(Template template) {
                             return template.getName().equalsIgnoreCase(args[2]);
                         }
-                    }) == null)
-                    {
+                    }) == null) {
                         commandSender.sendMessage(CloudAPI.getInstance().getPrefix() + "The template doesn't exist");
                         return;
                     }
@@ -178,7 +150,7 @@ public final class CommandCloudDev extends Command implements TabExecutor {
                             , "Dev" + args[1] + "-" + commandSender.getName());
                     */
                     CloudAPI.getInstance().startCloudServer("TestServer-" + ((ProxiedPlayer) commandSender).getUniqueId(), serverConfig, 356, true);
-                    ((ProxiedPlayer) commandSender).sendMessage(CloudAPI.getInstance().getPrefix() + "The server will start up now...");
+                    commandSender.sendMessage(CloudAPI.getInstance().getPrefix() + "The server will start up now...");
                     return;
                 }
             }
@@ -187,8 +159,7 @@ public final class CommandCloudDev extends Command implements TabExecutor {
     }
 
     @Override
-    public Iterable<String> onTabComplete(CommandSender commandSender, String[] strings)
-    {
+    public Iterable<String> onTabComplete(CommandSender commandSender, String[] strings) {
         return strings.length == 1 ? Arrays.asList("autocomplete with 1 args length") : Arrays.asList("autoComplete with another args length");
     }
 }

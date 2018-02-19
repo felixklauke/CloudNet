@@ -23,47 +23,41 @@ public final class WebServerProvider {
 
     private final Collection<DynamicWebHandler> dynamicWebHandlers = new ConcurrentLinkedQueue<>();
 
-    public WebServerProvider registerHandler(WebHandler httpHandler)
-    {
+    public WebServerProvider registerHandler(WebHandler httpHandler) {
         handlers.add(httpHandler);
         return this;
     }
 
-    public WebServerProvider registerDynamicHandler(DynamicWebHandler dynamicWebHandler)
-    {
+    public WebServerProvider registerDynamicHandler(DynamicWebHandler dynamicWebHandler) {
         dynamicWebHandlers.add(dynamicWebHandler);
         return this;
     }
 
-    public List<WebHandler> getHandlers()
-    {
+    public List<WebHandler> getHandlers() {
         return new ArrayList<>(handlers);
     }
 
-    public List<WebHandler> getHandlers(String path)
-    {
+    public List<WebHandler> getHandlers(String path) {
         return new ArrayList<>(CollectionWrapper.filterMany(handlers, new Acceptable<WebHandler>() {
             @Override
-            public boolean isAccepted(WebHandler webHandler)
-            {
-                if((path.equals("/") || path.isEmpty()) && webHandler.getPath().equals("/")) return true;
+            public boolean isAccepted(WebHandler webHandler) {
+                if ((path.equals("/") || path.isEmpty()) && webHandler.getPath().equals("/")) return true;
 
                 String[] array = path.replaceFirst("/", "").split("/");
                 String[] pathArray = webHandler.getPath().replaceFirst("/", "").split("/");
 
-                if(array.length != pathArray.length) return false;
+                if (array.length != pathArray.length) return false;
 
-                for(short i = 0; i < array.length; i++)
-                {
-                    if(!((pathArray[i].startsWith("{") && pathArray[i].endsWith("}")) || pathArray[i].equals(array[i]))) return false;
+                for (short i = 0; i < array.length; i++) {
+                    if (!((pathArray[i].startsWith("{") && pathArray[i].endsWith("}")) || pathArray[i].equals(array[i])))
+                        return false;
                 }
                 return true;
             }
         }));
     }
 
-    public void clear()
-    {
+    public void clear() {
         handlers.clear();
     }
 

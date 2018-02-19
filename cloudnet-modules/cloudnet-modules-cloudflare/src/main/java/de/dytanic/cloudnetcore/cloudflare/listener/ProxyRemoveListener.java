@@ -12,11 +12,10 @@ import de.dytanic.cloudnetcore.cloudflare.CloudFlareModule;
 /**
  * Created by Tareko on 20.10.2017.
  */
-public class ProxyRemoveListener implements IEventListener<ProxyRemoveEvent>{
+public class ProxyRemoveListener implements IEventListener<ProxyRemoveEvent> {
 
     @Override
-    public void onCall(ProxyRemoveEvent event)
-    {
+    public void onCall(ProxyRemoveEvent event) {
         CloudFlareService.getInstance().removeProxy(event.getProxyServer().getProcessMeta(), CloudFlareModule.getInstance().getCloudFlareDatabase());
     }
 }

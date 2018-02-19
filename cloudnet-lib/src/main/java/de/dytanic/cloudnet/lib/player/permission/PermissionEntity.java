@@ -25,15 +25,13 @@ public class PermissionEntity {
 
     protected Collection<GroupEntityData> groups;
 
-    public boolean hasPermission(PermissionPool permissionPool, String permission, String group)
-    {
+    public boolean hasPermission(PermissionPool permissionPool, String permission, String group) {
 
         if (permissionPool == null || permission == null) return false;
 
         String adminPermission = null;
         String[] block = permission.split(".");
-        if (block.length > 1)
-        {
+        if (block.length > 1) {
             adminPermission = block[0] + ".*";
         }
 
@@ -45,19 +43,17 @@ public class PermissionEntity {
         else if (adminPermission != null && permissions.containsKey(adminPermission) && !permissions.get(adminPermission))
             return true;
 
-        for (GroupEntityData implg : groups)
-        {
+        for (GroupEntityData implg : groups) {
             if (!permissionPool.getGroups().containsKey(implg.getGroup())) continue;
             PermissionGroup permissionGroup = permissionPool.getGroups().get(implg.getGroup());
 
-            if(checkAccess(permissionGroup, permission, adminPermission, group)) return true;
+            if (checkAccess(permissionGroup, permission, adminPermission, group)) return true;
 
-            for(String implGroup : permissionGroup.getImplementGroups())
-            {
+            for (String implGroup : permissionGroup.getImplementGroups()) {
                 if (!permissionPool.getGroups().containsKey(implGroup)) continue;
 
                 PermissionGroup subGroup = permissionPool.getGroups().get(implGroup);
-                if(checkAccess(subGroup, permission, adminPermission, group)) return true;
+                if (checkAccess(subGroup, permission, adminPermission, group)) return true;
             }
 
         }
@@ -65,19 +61,14 @@ public class PermissionEntity {
         return false;
     }
 
-    public PermissionGroup getHighestPermissionGroup(PermissionPool permissionPool)
-    {
+    public PermissionGroup getHighestPermissionGroup(PermissionPool permissionPool) {
         PermissionGroup permissionGroup = null;
 
-        for (GroupEntityData groupEntityData : getGroups())
-        {
-            if (permissionGroup == null)
-            {
+        for (GroupEntityData groupEntityData : getGroups()) {
+            if (permissionGroup == null) {
                 permissionGroup = permissionPool.getGroups().get(groupEntityData.getGroup());
-            } else
-            {
-                if (permissionGroup.getJoinPower() < permissionPool.getGroups().get(groupEntityData.getGroup()).getJoinPower())
-                {
+            } else {
+                if (permissionGroup.getJoinPower() < permissionPool.getGroups().get(groupEntityData.getGroup()).getJoinPower()) {
                     permissionGroup = permissionPool.getGroups().get(groupEntityData.getGroup());
                 }
             }
@@ -85,8 +76,7 @@ public class PermissionEntity {
         return permissionGroup;
     }
 
-    private boolean checkAccess(PermissionGroup permissionGroup, String permission, String adminPermission, String group)
-    {
+    private boolean checkAccess(PermissionGroup permissionGroup, String permission, String adminPermission, String group) {
         if ((permissionGroup.getPermissions().containsKey("*") && permissionGroup.getPermissions().get("*")))
             return true;
 
@@ -94,30 +84,25 @@ public class PermissionEntity {
                 permissionGroup.getPermissions().get(adminPermission)
         ))) return true;
 
-        if (permissionGroup.getServerGroupPermissions().containsKey(group))
-        {
-            if (permissionGroup.getServerGroupPermissions().get(group).contains(permission) ||
+        if (permissionGroup.getServerGroupPermissions().containsKey(group)) {
+            return permissionGroup.getServerGroupPermissions().get(group).contains(permission) ||
                     permissionGroup.getServerGroupPermissions().get(group).contains("*")
-                    || (adminPermission != null && permissionGroup.getServerGroupPermissions().get(group).contains(adminPermission)))
-                return true;
+                    || (adminPermission != null && permissionGroup.getServerGroupPermissions().get(group).contains(adminPermission));
         }
 
         return false;
     }
 
-    public boolean isInGroup(String group)
-    {
+    public boolean isInGroup(String group) {
         return CollectionWrapper.filter(this.groups, new Acceptable<GroupEntityData>() {
             @Override
-            public boolean isAccepted(GroupEntityData value)
-            {
+            public boolean isAccepted(GroupEntityData value) {
                 return value.getGroup().equals(group);
             }
         }) != null;
     }
 
-    public void setPrefix(String prefix)
-    {
+    public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
 

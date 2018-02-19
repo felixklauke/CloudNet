@@ -9,11 +9,9 @@ import de.dytanic.cloudnetwrapper.CloudNetWrapper;
 import de.dytanic.cloudnetwrapper.network.packet.out.PacketOutSendScreenLine;
 import lombok.Getter;
 
-import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
-import java.nio.channels.Pipe;
-import java.nio.channels.SelectableChannel;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
@@ -24,35 +22,29 @@ public class ScreenLoader implements Runnable {
 
     private Screenable screenable;
 
-    public ScreenLoader(Screenable screenable)
-    {
+    public ScreenLoader(Screenable screenable) {
         this.screenable = screenable;
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
         this.thread = Thread.currentThread();
         String input;
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
                 screenable.getInstance().getInputStream(), StandardCharsets.UTF_8)
         );
-        try
-        {
-            while ((input = bufferedReader.readLine()) != null)
-            {
+        try {
+            while ((input = bufferedReader.readLine()) != null) {
                 CloudNetWrapper.getInstance().getNetworkConnection()
                         .sendPacket(new PacketOutSendScreenLine(Arrays.asList(
                                 new ScreenInfo(screenable.getServiceId(), input)
                         )));
             }
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
         }
     }
 
-    public void cancel()
-    {
+    public void cancel() {
         thread.stop();
     }
 }

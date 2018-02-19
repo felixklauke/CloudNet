@@ -16,60 +16,52 @@ import java.util.List;
  */
 public class ProtocolLengthDeserializer extends ByteToMessageDecoder {
 
-	@Override
-	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-		in.markReaderIndex();
-		byte[] lengthBytes = new byte[3];
+    @Override
+    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
+        in.markReaderIndex();
+        byte[] lengthBytes = new byte[3];
 
-		for (int i = 0; i < 3; i++)
-		{
-			if (!in.isReadable())
-			{
-				in.resetReaderIndex();
-				return;
-			}
-			lengthBytes[i] = in.readByte();
-			if (lengthBytes[i] >= 0)
-			{
-				ByteBuf buffer = Unpooled.wrappedBuffer(lengthBytes);
+        for (int i = 0; i < 3; i++) {
+            if (!in.isReadable()) {
+                in.resetReaderIndex();
+                return;
+            }
+            lengthBytes[i] = in.readByte();
+            if (lengthBytes[i] >= 0) {
+                ByteBuf buffer = Unpooled.wrappedBuffer(lengthBytes);
 
-				try
-				{
-					int packetLength = readVarInt(buffer);
-					if (in.readableBytes() < packetLength)
-					{
-						in.resetReaderIndex();
-						return;
-					}
+                try {
+                    int packetLength = readVarInt(buffer);
+                    if (in.readableBytes() < packetLength) {
+                        in.resetReaderIndex();
+                        return;
+                    }
 
-					out.add(in.readBytes(packetLength));
-				}
-				finally
-				{
-					buffer.release();
-				}
+                    out.add(in.readBytes(packetLength));
+                } finally {
+                    buffer.release();
+                }
 
-				return;
-			}
-		}
-	}
+                return;
+            }
+        }
+    }
 
-	private int readVarInt(ByteBuf byteBuf)
-	{
-		int number = 0;
-		int round = 0;
-		byte currentByte;
+    private int readVarInt(ByteBuf byteBuf) {
+        int number = 0;
+        int round = 0;
+        byte currentByte;
 
-		do {
-			currentByte = byteBuf.readByte();
-			number |= (currentByte & 127) << round++ * 7;
+        do {
+            currentByte = byteBuf.readByte();
+            number |= (currentByte & 127) << round++ * 7;
 
-			if (round > 5) {
-				throw new RuntimeException();
-			}
-		} while ((currentByte & 128) == 128);
+            if (round > 5) {
+                throw new RuntimeException();
+            }
+        } while ((currentByte & 128) == 128);
 
-		return number;
-	}
+        return number;
+    }
 
 }

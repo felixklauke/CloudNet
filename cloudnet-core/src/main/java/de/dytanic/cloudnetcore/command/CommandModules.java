@@ -14,17 +14,14 @@ import de.dytanic.cloudnetcore.CloudNet;
  */
 public class CommandModules extends Command {
 
-    public CommandModules()
-    {
+    public CommandModules() {
         super("modules", "cloudnet.command.modules", "m");
     }
 
     @Override
-    public void onExecuteCommand(CommandSender sender, String[] args)
-    {
+    public void onExecuteCommand(CommandSender sender, String[] args) {
         sender.sendMessage("Running modules:", " ");
-        for(Module module : CloudNet.getInstance().getModuleManager().getModules())
-        {
+        for (Module module : CloudNet.getInstance().getModuleManager().getModules()) {
             sender.sendMessage(module.getName() + " " + module.getModuleConfig().getVersion() + " by " + module.getModuleConfig().getAuthor() + "");
         }
     }

@@ -37,61 +37,52 @@ public class MasterTemplateLoader {
 
     private String customName;
 
-    public MasterTemplateLoader load()
-    {
-        try
-        {
+    public MasterTemplateLoader load() {
+        try {
             HttpURLConnection urlConnection = (HttpURLConnection) new URL(url).openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.setRequestProperty("-Xcloudnet-user", simpledUser.getUserName());
             urlConnection.setRequestProperty("-Xcloudnet-token", simpledUser.getApiToken());
             urlConnection.setRequestProperty("-Xmessage", customName != null ? "custom" : "template");
-            urlConnection.setRequestProperty("-Xvalue",customName != null ? customName : new Document("template", template.getName()).append("group", group).convertToJsonString());
+            urlConnection.setRequestProperty("-Xvalue", customName != null ? customName : new Document("template", template.getName()).append("group", group).convertToJsonString());
             urlConnection.setUseCaches(false);
             urlConnection.connect();
 
-            if(urlConnection.getHeaderField("-Xresponse") == null)
-            {
+            if (urlConnection.getHeaderField("-Xresponse") == null) {
                 Files.copy(urlConnection.getInputStream(), Paths.get(dest));
             }
             urlConnection.disconnect();
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return this;
     }
 
-    public MasterTemplateLoader unZip(String dest)
-    {
-        try{
+    public MasterTemplateLoader unZip(String dest) {
+        try {
 
             ZipFile zipFile = new ZipFile(this.dest);
             ZipEntry z;
             Enumeration<? extends ZipEntry> entryEnumeration = zipFile.entries();
-            while (entryEnumeration.hasMoreElements())
-            {
+            while (entryEnumeration.hasMoreElements()) {
                 z = entryEnumeration.nextElement();
                 extractEntry(zipFile, z, dest);
             }
             new File(this.dest).delete();
-        }catch (Exception ex)
-        {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return this;
     }
 
     private void extractEntry(ZipFile zipFile, ZipEntry entry, String destDir)
-            throws IOException
-    {
+            throws IOException {
         final byte[] buffer = new byte[0xFFFF];
         File file = new File(destDir, entry.getName());
 
         if (entry.isDirectory())
             file.mkdirs();
-        else
-        {
+        else {
             new File(file.getParent()).mkdirs();
 
             InputStream is = null;
@@ -104,8 +95,7 @@ public class MasterTemplateLoader {
                 int len;
                 while ((len = is.read(buffer)) != -1)
                     os.write(buffer, 0, len);
-            } finally
-            {
+            } finally {
                 if (os != null) os.close();
                 if (is != null) is.close();
             }

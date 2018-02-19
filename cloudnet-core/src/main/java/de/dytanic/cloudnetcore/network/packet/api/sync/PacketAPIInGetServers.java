@@ -4,17 +4,14 @@
 
 package de.dytanic.cloudnetcore.network.packet.api.sync;
 
-import de.dytanic.cloudnet.lib.NetworkUtils;
 import de.dytanic.cloudnet.lib.network.protocol.packet.Packet;
 import de.dytanic.cloudnet.lib.network.protocol.packet.PacketRC;
 import de.dytanic.cloudnet.lib.network.protocol.packet.PacketSender;
 import de.dytanic.cloudnet.lib.server.info.ServerInfo;
-import de.dytanic.cloudnet.lib.utility.CollectionWrapper;
 import de.dytanic.cloudnet.lib.utility.Catcher;
+import de.dytanic.cloudnet.lib.utility.CollectionWrapper;
 import de.dytanic.cloudnet.lib.utility.document.Document;
-import de.dytanic.cloudnet.lib.utility.threading.Runnabled;
 import de.dytanic.cloudnetcore.CloudNet;
-import de.dytanic.cloudnetcore.network.components.CloudServer;
 import de.dytanic.cloudnetcore.network.components.MinecraftServer;
 
 import java.util.Collection;
@@ -25,27 +22,21 @@ import java.util.Collection;
 public class PacketAPIInGetServers extends PacketAPIIO {
 
     @Override
-    public void handleInput(Document data, PacketSender packetSender)
-    {
-        if(packetUniqueId == null) return;
-        if(data.contains("group"))
-        {
+    public void handleInput(Document data, PacketSender packetSender) {
+        if (packetUniqueId == null) return;
+        if (data.contains("group")) {
             Collection<ServerInfo> proxyInfos = CollectionWrapper.transform(CloudNet.getInstance().getServers(data.getString("group")), new Catcher<ServerInfo, MinecraftServer>() {
                 @Override
-                public ServerInfo doCatch(MinecraftServer key)
-                {
+                public ServerInfo doCatch(MinecraftServer key) {
                     return key.getServerInfo();
                 }
             });
 
             packetSender.sendPacket(getResult(new Document("serverInfos", proxyInfos)));
-        }
-        else
-        {
+        } else {
             Collection<ServerInfo> proxyInfos = CollectionWrapper.transform(CloudNet.getInstance().getServers().values(), new Catcher<ServerInfo, MinecraftServer>() {
                 @Override
-                public ServerInfo doCatch(MinecraftServer key)
-                {
+                public ServerInfo doCatch(MinecraftServer key) {
                     return key.getServerInfo();
                 }
             });
@@ -55,8 +46,7 @@ public class PacketAPIInGetServers extends PacketAPIIO {
     }
 
     @Override
-    protected Packet getResult(Document value)
-    {
+    protected Packet getResult(Document value) {
         return new Packet(packetUniqueId, PacketRC.SERVER_HANDLE, value);
     }
 }

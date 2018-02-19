@@ -5,7 +5,6 @@
 package de.dytanic.cloudnet.bridge.event.bukkit;
 
 import lombok.Getter;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
@@ -18,19 +17,16 @@ public class BukkitOnlineCountUpdateEvent extends BukkitCloudEvent {
 
     private int onlineCount;
 
-    public BukkitOnlineCountUpdateEvent(int onlineCount)
-    {
+    public BukkitOnlineCountUpdateEvent(int onlineCount) {
         this.onlineCount = onlineCount;
     }
 
-    public static HandlerList getHandlerList()
-    {
+    public static HandlerList getHandlerList() {
         return handlerList;
     }
 
     @Override
-    public HandlerList getHandlers()
-    {
+    public HandlerList getHandlers() {
         return handlerList;
     }
 }

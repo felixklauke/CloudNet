@@ -13,57 +13,48 @@ import de.dytanic.cloudnet.lib.utility.document.Document;
 
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.DoubleConsumer;
 
 /**
  * Created by Tareko on 01.09.2017.
  */
 public class MobDatabase extends DatabaseUseable {
 
-    public MobDatabase(Database database)
-    {
+    public MobDatabase(Database database) {
         super(database);
         Document document = database.getDocument("server_selector_mobs");
-        if(document == null)
-        {
+        if (document == null) {
             document = new DatabaseDocument("server_selector_mobs").append("mobs", new Document());
         }
         database.insert(document);
     }
 
-    public void append(ServerMob serverMob)
-    {
+    public void append(ServerMob serverMob) {
         Document document = database.getDocument("server_selector_mobs").getDocument("mobs").append(serverMob.getUniqueId().toString(), serverMob);
         database.insert(document);
     }
 
-    public void remove(ServerMob serverMob)
-    {
+    public void remove(ServerMob serverMob) {
         Document document = database.getDocument("server_selector_mobs").getDocument("mobs").remove(serverMob.getUniqueId().toString());
         database.insert(document);
     }
 
-    public Map<UUID, ServerMob> loadAll()
-    {
+    public Map<UUID, ServerMob> loadAll() {
         boolean injectable = false;
-        Map<UUID, ServerMob> mobMap = database.getDocument("server_selector_mobs").getObject("mobs", new TypeToken<Map<UUID, ServerMob>>(){}.getType());
+        Map<UUID, ServerMob> mobMap = database.getDocument("server_selector_mobs").getObject("mobs", new TypeToken<Map<UUID, ServerMob>>() {
+        }.getType());
 
-        for(ServerMob serverMob : mobMap.values())
-        {
-            if(serverMob.getItemId() == null)
-            {
+        for (ServerMob serverMob : mobMap.values()) {
+            if (serverMob.getItemId() == null) {
                 serverMob.setItemId(138);
                 injectable = true;
             }
-            if(serverMob.getAutoJoin() == null)
-            {
+            if (serverMob.getAutoJoin() == null) {
                 serverMob.setAutoJoin(false);
                 injectable = true;
             }
         }
 
-        if(injectable)
-        {
+        if (injectable) {
             Document document = database.getDocument("server_selector_mobs");
             document.append("mobs", mobMap);
             database.insert(document);

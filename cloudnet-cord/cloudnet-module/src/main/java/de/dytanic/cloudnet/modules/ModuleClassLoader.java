@@ -17,14 +17,12 @@ public class ModuleClassLoader extends URLClassLoader implements ModuleLoader {
 
     private ModuleConfig config;
 
-    public ModuleClassLoader(ModuleConfig config) throws Exception
-    {
+    public ModuleClassLoader(ModuleConfig config) throws Exception {
         super(new URL[]{config.getFile().toURI().toURL()});
         this.config = config;
     }
 
-    public Module loadModule() throws Exception
-    {
+    public Module loadModule() throws Exception {
         Class<?> bootstrap = loadClass(this.config.getMain());
         Module module = (Module) bootstrap.getDeclaredConstructor().newInstance();
 

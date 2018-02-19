@@ -4,8 +4,8 @@
 
 package de.dytanic.cloudnetcore.cloudflare;
 
-import de.dytanic.cloudnet.cloudflare.database.CloudFlareDatabase;
 import de.dytanic.cloudnet.cloudflare.CloudFlareService;
+import de.dytanic.cloudnet.cloudflare.database.CloudFlareDatabase;
 import de.dytanic.cloudnet.lib.service.SimpledWrapperInfo;
 import de.dytanic.cloudnet.lib.utility.Catcher;
 import de.dytanic.cloudnet.lib.utility.MapWrapper;
@@ -30,36 +30,30 @@ public class CloudFlareModule extends CoreModule {
     private CloudFlareDatabase cloudFlareDatabase;
 
     @Override
-    public void onLoad()
-    {
+    public void onLoad() {
         instance = this;
     }
 
     @Override
-    public void onBootstrap()
-    {
+    public void onBootstrap() {
         configCloudFlare = new ConfigCloudFlare();
         cloudFlareDatabase = new CloudFlareDatabase(getCloud().getDatabaseManager().getDatabase("cloud_internal_cfg"));
-        try
-        {
+        try {
 
             CloudFlareService cloudFlareAPI = new CloudFlareService(configCloudFlare.load());
             cloudFlareAPI.bootstrap(MapWrapper.transform(getCloud().getWrappers(), new Catcher<String, String>() {
                 @Override
-                public String doCatch(String key)
-                {
+                public String doCatch(String key) {
                     return key;
                 }
             }, new Catcher<SimpledWrapperInfo, Wrapper>() {
                 @Override
-                public SimpledWrapperInfo doCatch(Wrapper key)
-                {
+                public SimpledWrapperInfo doCatch(Wrapper key) {
                     return new SimpledWrapperInfo(key.getServerId(), key.getNetworkInfo().getHostName());
                 }
             }), getCloud().getProxyGroups(), cloudFlareDatabase);
 
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
@@ -68,13 +62,10 @@ public class CloudFlareModule extends CoreModule {
     }
 
     @Override
-    public void onShutdown()
-    {
-        try
-        {
+    public void onShutdown() {
+        try {
             CloudFlareService.getInstance().shutdown(cloudFlareDatabase);
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
         }
     }
 }

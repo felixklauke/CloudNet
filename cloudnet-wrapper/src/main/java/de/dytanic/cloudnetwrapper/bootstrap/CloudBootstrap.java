@@ -24,8 +24,7 @@ import java.util.Arrays;
 
 public class CloudBootstrap {
 
-    public static void main(String[] args) throws Exception
-    {
+    public static void main(String[] args) throws Exception {
 
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
 
@@ -54,8 +53,7 @@ public class CloudBootstrap {
 
         OptionSet optionSet = optionParser.parse(args);
 
-        if (optionSet.has("help") || optionSet.has("?"))
-        {
+        if (optionSet.has("help") || optionSet.has("?")) {
             HelpService helpService = new HelpService();
             helpService.getDescriptions().put("help", new ServiceDescription[]{new ServiceDescription("--help | --?", "This is the main argument to get all information about other parameters")});
             helpService.getDescriptions().put("ssl", new ServiceDescription[]{new ServiceDescription("--ssl", "Allows SSL encryption via a system-contained certificate or an open SSL certificate")});
@@ -67,32 +65,25 @@ public class CloudBootstrap {
             return;
         }
 
-        if (optionSet.has("systemTimer"))
-        {
+        if (optionSet.has("systemTimer")) {
             new SystemTimer();
         }
 
-        if (optionSet.has("version") || optionSet.has("v"))
-        {
+        if (optionSet.has("version") || optionSet.has("v")) {
             System.out.println("CloudNet-Wrapper RezSyM Version " + CloudBootstrap.class.getPackage().getImplementationVersion() + "-" + CloudBootstrap.class.getPackage().getSpecificationVersion());
             return;
         }
 
         /*==============================================*/
-        try
-        {
+        try {
             FileUtils.deleteDirectory(new File("temp"));
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
         }
 
-        if (Files.exists(Paths.get("local")))
-        {
-            try
-            {
+        if (Files.exists(Paths.get("local"))) {
+            try {
                 FileUtils.deleteDirectory(new File("local/cache"));
-            } catch (Exception ex)
-            {
+            } catch (Exception ex) {
             }
         }
         /*==============================================*/
@@ -104,31 +95,25 @@ public class CloudBootstrap {
         CloudNetWrapperConfig cloudNetWrapperConfig = new CloudNetWrapperConfig(cloudNetLogging.getReader());
         CloudNetWrapper cloudNetWrapper = new CloudNetWrapper(optionSet, cloudNetWrapperConfig, cloudNetLogging);
 
-        if (!cloudNetWrapper.bootstrap())
-        {
+        if (!cloudNetWrapper.bootstrap()) {
             System.exit(0);
         }
 
-        if (!optionSet.has("noconsole"))
-        {
+        if (!optionSet.has("noconsole")) {
             System.out.println("Use the command \"help\" for further information!");
             String commandLine;
 
             while (true)
-            try
-            {
-                while ((commandLine = cloudNetLogging.getReader().readLine()) != null)
-                {
-                    if (!cloudNetWrapper.getCommandManager().dispatchCommand(commandLine))
-                    {
-                        System.out.println("Command not found. Use the command \"help\" for further information!");
+                try {
+                    while ((commandLine = cloudNetLogging.getReader().readLine()) != null) {
+                        if (!cloudNetWrapper.getCommandManager().dispatchCommand(commandLine)) {
+                            System.out.println("Command not found. Use the command \"help\" for further information!");
+                        }
                     }
-                }
-            }catch (Exception ex) {
+                } catch (Exception ex) {
 
-            }
-        } else
-        {
+                }
+        } else {
             while (true) NetworkUtils.sleepUninterruptedly(Long.MAX_VALUE);
         }
     }

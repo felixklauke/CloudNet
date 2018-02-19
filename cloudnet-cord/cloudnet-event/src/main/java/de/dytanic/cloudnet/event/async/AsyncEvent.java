@@ -9,17 +9,17 @@ import lombok.Getter;
 
 /**
  * Asynchronized Event server
+ *
  * @param <E>
  */
 @Getter
 public abstract class AsyncEvent<E extends AsyncEvent<?>> extends Event {
 
-    public AsyncEvent(AsyncPoster<E> poster)
-    {
+    private AsyncPoster<E> poster;
+
+    public AsyncEvent(AsyncPoster<E> poster) {
         this.poster = poster;
         this.asynchronized = true;
     }
-
-    private AsyncPoster<E> poster;
 
 }

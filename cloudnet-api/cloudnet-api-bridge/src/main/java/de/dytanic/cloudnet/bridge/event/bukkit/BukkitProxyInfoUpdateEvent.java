@@ -6,7 +6,6 @@ package de.dytanic.cloudnet.bridge.event.bukkit;
 
 import de.dytanic.cloudnet.lib.server.info.ProxyInfo;
 import lombok.AllArgsConstructor;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
@@ -19,19 +18,16 @@ public class BukkitProxyInfoUpdateEvent extends BukkitCloudEvent {
 
     private ProxyInfo serverInfo;
 
-    public ProxyInfo getProxyInfo()
-    {
+    public static HandlerList getHandlerList() {
+        return handlerList;
+    }
+
+    public ProxyInfo getProxyInfo() {
         return serverInfo;
     }
 
     @Override
-    public HandlerList getHandlers()
-    {
-        return handlerList;
-    }
-
-    public static HandlerList getHandlerList()
-    {
+    public HandlerList getHandlers() {
         return handlerList;
     }
 

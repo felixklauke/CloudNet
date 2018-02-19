@@ -7,16 +7,15 @@ package de.dytanic.cloudnetwrapper;
 import de.dytanic.cloudnet.command.CommandManager;
 import de.dytanic.cloudnet.lib.ConnectableAddress;
 import de.dytanic.cloudnet.lib.NetworkUtils;
+import de.dytanic.cloudnet.lib.interfaces.Executeable;
 import de.dytanic.cloudnet.lib.network.NetDispatcher;
 import de.dytanic.cloudnet.lib.network.NetworkConnection;
 import de.dytanic.cloudnet.lib.network.auth.Auth;
 import de.dytanic.cloudnet.lib.network.protocol.packet.PacketRC;
 import de.dytanic.cloudnet.lib.server.ProxyGroup;
 import de.dytanic.cloudnet.lib.server.ServerGroup;
-import de.dytanic.cloudnet.lib.interfaces.Executeable;
 import de.dytanic.cloudnet.lib.user.SimpledUser;
 import de.dytanic.cloudnet.lib.utility.threading.Scheduler;
-import de.dytanic.cloudnet.lib.utility.threading.TaskCancelable;
 import de.dytanic.cloudnet.logging.CloudLogger;
 import de.dytanic.cloudnet.logging.handler.ICloudLoggerHandler;
 import de.dytanic.cloudnet.web.client.WebClient;
@@ -46,9 +45,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Getter
 public final class CloudNetWrapper implements Executeable, Runnable, ShutdownOnCentral {
@@ -65,31 +62,26 @@ public final class CloudNetWrapper implements Executeable, Runnable, ShutdownOnC
     private final ScreenProvider screenProvider = new ScreenProvider();
     private final CommandManager commandManager = new CommandManager();
     private final WebClient webClient = new WebClient();
+    private final java.util.Map<String, GameServer> servers = new ConcurrentHashMap<>();
+    private final java.util.Map<String, BungeeCord> proxys = new ConcurrentHashMap<>();
+    private final java.util.Map<String, CloudGameServer> cloudservers = new ConcurrentHashMap<>();
+    private final java.util.Map<String, ServerGroup> serverGroups = new ConcurrentHashMap<>();
+    private final java.util.Map<String, ProxyGroup> proxyGroups = new ConcurrentHashMap<>();
     private Auth auth;
     private OptionSet optionSet;
     @Setter
     private ServerProcessQueue serverProcessQueue;
     @Setter
     private SimpledUser simpledUser;
-
     //Sytem meta
     @Setter
     private int maxMemory;
-
-    private final java.util.Map<String, GameServer> servers = new ConcurrentHashMap<>();
-    private final java.util.Map<String, BungeeCord> proxys = new ConcurrentHashMap<>();
-    private final java.util.Map<String, CloudGameServer> cloudservers = new ConcurrentHashMap<>();
-
-    private final java.util.Map<String, ServerGroup> serverGroups = new ConcurrentHashMap<>();
-    private final java.util.Map<String, ProxyGroup> proxyGroups = new ConcurrentHashMap<>();
-
     private boolean canDeployed = false;
+    private boolean x_bnosxo = true;
 
-    public CloudNetWrapper(OptionSet optionSet, CloudNetWrapperConfig cloudNetWrapperConfig, CloudLogger cloudNetLogging) throws Exception
-    {
+    public CloudNetWrapper(OptionSet optionSet, CloudNetWrapperConfig cloudNetWrapperConfig, CloudLogger cloudNetLogging) {
 
-        if (instance == null)
-        {
+        if (instance == null) {
             instance = this;
         }
 
@@ -98,13 +90,10 @@ public final class CloudNetWrapper implements Executeable, Runnable, ShutdownOnC
         this.networkConnection = new NetworkConnection(new ConnectableAddress(
                 cloudNetWrapperConfig.getCloudnetHost(), cloudNetWrapperConfig.getCloudnetPort()), new Runnable() {
             @Override
-            public void run()
-            {
-                try
-                {
+            public void run() {
+                try {
                     onShutdownCentral();
-                } catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -112,8 +101,7 @@ public final class CloudNetWrapper implements Executeable, Runnable, ShutdownOnC
 
         String key = NetworkUtils.readWrapperKey();
 
-        if (key == null)
-        {
+        if (key == null) {
             System.out.println("Please copy the WRAPPER_KEY.cnd for authentication!");
             System.out.println("The Wrapper stops in 5 seconds");
             NetworkUtils.sleepUninterruptedly(2000);
@@ -128,8 +116,7 @@ public final class CloudNetWrapper implements Executeable, Runnable, ShutdownOnC
     }
 
     @Override
-    public boolean bootstrap() throws Exception
-    {
+    public boolean bootstrap() throws Exception {
         if (!optionSet.has("disable-autoupdate")) checkForUpdates();
 
         if (!optionSet.has("disallow_bukkit_download") && !Files.exists(Paths.get("local/spigot.jar")))
@@ -159,11 +146,9 @@ public final class CloudNetWrapper implements Executeable, Runnable, ShutdownOnC
         networkConnection.getPacketManager().registerHandler(PacketRC.TEST + 1, PacketInTestResult.class);
 
         System.out.println("Trying to connect " + networkConnection.getConnectableAddress().getHostName() + ":" + networkConnection.getConnectableAddress().getPort());
-        while (networkConnection.getConnectionTrys() < 5 && networkConnection.getChannel() == null)
-        {
+        while (networkConnection.getConnectionTrys() < 5 && networkConnection.getChannel() == null) {
             networkConnection.tryConnect(optionSet.has("ssl"), new NetDispatcher(networkConnection, false), auth);
-            if (networkConnection.getChannel() != null)
-            {
+            if (networkConnection.getChannel() != null) {
                 networkConnection.sendPacketSynchronized(new PacketOutUpdateWrapperInfo());
                 break;
             }
@@ -188,8 +173,7 @@ public final class CloudNetWrapper implements Executeable, Runnable, ShutdownOnC
 
             scheduler.runTaskRepeatSync(new Runnable() {
                 @Override
-                public void run()
-                {
+                public void run() {
                     networkConnection.sendPacket(new PacketOutUpdateCPUUsage(getCpuUsage()));
                 }
             }, 0, 200);
@@ -197,8 +181,7 @@ public final class CloudNetWrapper implements Executeable, Runnable, ShutdownOnC
 
         cloudNetLogging.getHandler().add(new ICloudLoggerHandler() {
             @Override
-            public void handleConsole(String input)
-            {
+            public void handleConsole(String input) {
                 if (networkConnection.isConnected())
                     networkConnection.sendPacket(new PacketOutWrapperScreen(input));
             }
@@ -211,8 +194,7 @@ public final class CloudNetWrapper implements Executeable, Runnable, ShutdownOnC
         return true;
     }
 
-    public int getUsedMemory()
-    {
+    public int getUsedMemory() {
         int m = 0;
         for (GameServer gameServer : servers.values())
             m = m + gameServer.getServerProcess().getMeta().getMemory();
@@ -223,16 +205,13 @@ public final class CloudNetWrapper implements Executeable, Runnable, ShutdownOnC
         return m;
     }
 
-    public void checkForUpdates()
-    {
+    public void checkForUpdates() {
         if (!wrapperConfig.isAutoUpdate()) return;
 
         String version = webClient.getNewstVersion();
 
-        if (version != null)
-        {
-            if (!version.equals(CloudNetWrapper.class.getPackage().getImplementationVersion()))
-            {
+        if (version != null) {
+            if (!version.equals(CloudNetWrapper.class.getPackage().getImplementationVersion())) {
                 System.out.println("Preparing update...");
                 webClient.update(version);
                 shutdown();
@@ -243,8 +222,7 @@ public final class CloudNetWrapper implements Executeable, Runnable, ShutdownOnC
     }
 
     @Override
-    public boolean shutdown()
-    {
+    public boolean shutdown() {
         if (!RUNNING) return false;
         System.out.println("Wrapper shutdown...");
         TaskScheduler.runtimeScheduler().shutdown();
@@ -266,11 +244,9 @@ public final class CloudNetWrapper implements Executeable, Runnable, ShutdownOnC
         this.cloudNetLogging.shutdownAll();
         if (networkConnection.getChannel() != null)
             networkConnection.tryDisconnect();
-        try
-        {
+        try {
             FileUtils.deleteDirectory(new File("temp"));
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
         }
 
         System.out.println("\n    _  _     _______   _                       _          \n" +
@@ -287,21 +263,16 @@ public final class CloudNetWrapper implements Executeable, Runnable, ShutdownOnC
         return true;
     }
 
-    private boolean x_bnosxo = true;
-
     @Override
-    public void run()
-    {
+    public void run() {
         x_bnosxo = false;
         shutdown();
     }
 
     @Override
-    public void onShutdownCentral() throws Exception
-    {
+    public void onShutdownCentral() throws Exception {
         canDeployed = false;
-        if (serverProcessQueue != null)
-        {
+        if (serverProcessQueue != null) {
             serverProcessQueue.getProxys().clear();
             serverProcessQueue.getServers().clear();
             serverProcessQueue.setRunning(false);
@@ -318,21 +289,17 @@ public final class CloudNetWrapper implements Executeable, Runnable, ShutdownOnC
 
         System.out.println("Wrapper try to connect to the CloudNet-Core");
 
-        try
-        {
+        try {
             FileUtils.deleteDirectory(new File("temp"));
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
 
         }
 
         new File("temp").mkdir();
 
-        while (networkConnection.getChannel() == null)
-        {
+        while (networkConnection.getChannel() == null) {
             networkConnection.tryConnect(optionSet.has("ssl"), new NetDispatcher(networkConnection, false), auth);
-            if (networkConnection.getChannel() != null)
-            {
+            if (networkConnection.getChannel() != null) {
                 networkConnection.sendPacketSynchronized(new PacketOutUpdateWrapperInfo());
                 break;
             }
@@ -345,8 +312,7 @@ public final class CloudNetWrapper implements Executeable, Runnable, ShutdownOnC
 
     }
 
-    public double getCpuUsage()
-    {
+    public double getCpuUsage() {
         return NetworkUtils.cpuUsage();
     }
 

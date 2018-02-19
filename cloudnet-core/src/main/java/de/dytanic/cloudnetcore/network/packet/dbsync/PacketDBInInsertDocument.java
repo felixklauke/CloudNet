@@ -15,8 +15,7 @@ import de.dytanic.cloudnetcore.CloudNet;
 public class PacketDBInInsertDocument extends PacketInHandler {
 
     @Override
-    public void handleInput(Document data, PacketSender packetSender)
-    {
+    public void handleInput(Document data, PacketSender packetSender) {
         CloudNet.getInstance().getDatabaseManager().getDatabase(data.getString("db")).insert(data.getDocument("insert"));
     }
 }

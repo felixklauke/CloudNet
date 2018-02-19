@@ -24,12 +24,9 @@ public final class CloudNetServer
     private SslContext sslContext;
     private EventLoopGroup workerGroup = NetworkUtils.eventLoopGroup(), bossGroup = NetworkUtils.eventLoopGroup();
 
-    public CloudNetServer(OptionSet optionSet, ConnectableAddress connectableAddress)
-    {
-        try
-        {
-            if (optionSet.has("ssl"))
-            {
+    public CloudNetServer(OptionSet optionSet, ConnectableAddress connectableAddress) {
+        try {
+            if (optionSet.has("ssl")) {
                 CloudNet.getLogger().debug("Enabling SSL Context for service requests");
                 SelfSignedCertificate ssc = new SelfSignedCertificate();
                 sslContext = SslContext.newServerContext(ssc.certificate(), ssc.privateKey());
@@ -57,52 +54,43 @@ public final class CloudNetServer
             CloudNet.getLogger().debug("Try to bind to " + connectableAddress.getHostName() + ":" + connectableAddress.getPort() + "...");
             ChannelFuture channelFuture = serverBootstrap.bind(connectableAddress.getHostName(), connectableAddress.getPort()).addListener(new ChannelFutureListener() {
                 @Override
-                public void operationComplete(ChannelFuture channelFuture) throws Exception
-                {
-                    if (channelFuture.isSuccess())
-                    {
+                public void operationComplete(ChannelFuture channelFuture) {
+                    if (channelFuture.isSuccess()) {
                         System.out.println("CloudNet is listening @" + connectableAddress.getHostName() + ":" + connectableAddress.getPort());
                         CloudNet.getInstance().getCloudServers().add(CloudNetServer.this);
-                    } else
-                    {
+                    } else {
                         System.out.println("Failed to bind @" + connectableAddress.getHostName() + ":" + connectableAddress.getPort());
                     }
                 }
             }).addListener(ChannelFutureListener.CLOSE_ON_FAILURE).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
 
             channelFuture.syncUninterruptibly().channel().closeFuture().sync();
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
             System.exit(0);
 
-        } finally
-        {
+        } finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
         }
     }
 
     @Override
-    protected void initChannel(Channel channel) throws Exception
-    {
+    protected void initChannel(Channel channel) {
         System.out.println("Channel [" + channel.remoteAddress().toString() + "] connecting...");
 
         ChannelConnectEvent channelConnectEvent = new ChannelConnectEvent(false, channel);
         CloudNet.getInstance().getEventManager().callEvent(channelConnectEvent);
-        if(channelConnectEvent.isCancelled())
-        {
+        if (channelConnectEvent.isCancelled()) {
             channel.close().syncUninterruptibly();
             return;
         }
 
         String[] address = channel.remoteAddress().toString().split(":");
         String host = address[0].replaceFirst("/", "");
-        for (Wrapper cn : CloudNet.getInstance().getWrappers().values())
-        {
-            if (cn.getChannel() == null && cn.getNetworkInfo().getHostName().equalsIgnoreCase(host))
-            {
+        for (Wrapper cn : CloudNet.getInstance().getWrappers().values()) {
+            if (cn.getChannel() == null && cn.getNetworkInfo().getHostName().equalsIgnoreCase(host)) {
                 if (sslContext != null) channel.pipeline().addLast(sslContext.newHandler(channel.alloc()));
 
                 NetworkUtils.initChannel(channel);
@@ -110,8 +98,7 @@ public final class CloudNetServer
                 return;
             }
 
-            if(cn.getNetworkInfo().getHostName().equals(host))
-            {
+            if (cn.getNetworkInfo().getHostName().equals(host)) {
                 if (sslContext != null) channel.pipeline().addLast(sslContext.newHandler(channel.alloc()));
 
                 NetworkUtils.initChannel(channel);

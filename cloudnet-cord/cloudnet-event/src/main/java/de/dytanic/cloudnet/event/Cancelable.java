@@ -5,8 +5,8 @@ package de.dytanic.cloudnet.event;
  */
 public interface Cancelable {
 
-    void setCancelled(boolean cancel);
-
     boolean isCancelled();
+
+    void setCancelled(boolean cancel);
 
 }

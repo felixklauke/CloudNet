@@ -6,7 +6,6 @@ package de.dytanic.cloudnet.bridge.event.bukkit;
 
 import de.dytanic.cloudnet.lib.player.CloudPlayer;
 import lombok.AllArgsConstructor;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
@@ -16,22 +15,18 @@ import org.bukkit.event.HandlerList;
 public class BukkitPlayerUpdateEvent extends BukkitCloudEvent {
 
     private static HandlerList handlerList = new HandlerList();
+    private CloudPlayer cloudPlayer;
 
-    public static HandlerList getHandlerList()
-    {
+    public static HandlerList getHandlerList() {
         return handlerList;
     }
 
-    private CloudPlayer cloudPlayer;
-
-    public CloudPlayer getCloudPlayer()
-    {
+    public CloudPlayer getCloudPlayer() {
         return cloudPlayer;
     }
 
     @Override
-    public HandlerList getHandlers()
-    {
+    public HandlerList getHandlers() {
         return handlerList;
     }
 }

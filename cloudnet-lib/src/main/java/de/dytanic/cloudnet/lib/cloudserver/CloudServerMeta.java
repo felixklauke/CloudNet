@@ -10,7 +10,6 @@ import de.dytanic.cloudnet.lib.server.template.Template;
 import de.dytanic.cloudnet.lib.server.template.TemplateResource;
 import de.dytanic.cloudnet.lib.service.ServiceId;
 import de.dytanic.cloudnet.lib.service.plugin.ServerInstallablePlugin;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -45,8 +44,7 @@ public class CloudServerMeta {
 
     private Template template;
 
-    public CloudServerMeta(ServiceId serviceId, int memory, boolean priorityStop, String[] processParameters, Collection<ServerInstallablePlugin> plugins, ServerConfig serverConfig, int port, String templateName, Properties properties, ServerGroupType serverGroupType)
-    {
+    public CloudServerMeta(ServiceId serviceId, int memory, boolean priorityStop, String[] processParameters, Collection<ServerInstallablePlugin> plugins, ServerConfig serverConfig, int port, String templateName, Properties properties, ServerGroupType serverGroupType) {
         this.serviceId = serviceId;
         this.memory = memory;
         this.priorityStop = priorityStop;

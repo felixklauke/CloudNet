@@ -8,9 +8,9 @@ import de.dytanic.cloudnet.api.CloudAPI;
 import de.dytanic.cloudnet.api.config.CloudConfigLoader;
 import de.dytanic.cloudnet.api.config.ConfigTypeLoader;
 import de.dytanic.cloudnet.bridge.event.bukkit.BukkitCloudServerInitEvent;
+import de.dytanic.cloudnet.bridge.internal.command.bukkit.CommandCloudDeploy;
 import de.dytanic.cloudnet.bridge.internal.command.bukkit.CommandCloudServer;
 import de.dytanic.cloudnet.bridge.internal.command.bukkit.CommandResource;
-import de.dytanic.cloudnet.bridge.internal.command.bukkit.CommandCloudDeploy;
 import de.dytanic.cloudnet.bridge.internal.listener.bukkit.BukkitListener;
 import de.dytanic.cloudnet.bridge.internal.serverselectors.MobSelector;
 import de.dytanic.cloudnet.bridge.internal.serverselectors.SignSelector;
@@ -35,26 +35,22 @@ import java.nio.file.Paths;
 public final class BukkitBootstrap extends JavaPlugin implements Runnable {
 
     @Override
-    public void onLoad()
-    {
+    public void onLoad() {
         CloudAPI cloudAPI = new CloudAPI(new CloudConfigLoader(Paths.get("CLOUD/connection.json"), Paths.get("CLOUD/config.json"), ConfigTypeLoader.INTERNAL), this);
         cloudAPI.getNetworkConnection().getPacketManager().registerHandler(PacketRC.SERVER_SELECTORS + 1, PacketInSignSelector.class);
         cloudAPI.getNetworkConnection().getPacketManager().registerHandler(PacketRC.SERVER_SELECTORS + 2, PacketInMobSelector.class);
     }
 
     @Override
-    public void onEnable()
-    {
+    public void onEnable() {
         CloudAPI.getInstance().bootstrap();
         checkRegistryAccess();
 
-        try
-        {
+        try {
             Field field = Class.forName("org.spigotmc.AsyncCatcher").getDeclaredField("enabled");
             field.setAccessible(true);
             field.set(null, false);
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
         }
 
         new CloudServer(this, CloudAPI.getInstance());
@@ -67,13 +63,11 @@ public final class BukkitBootstrap extends JavaPlugin implements Runnable {
     }
 
     @Override
-    public void onDisable()
-    {
+    public void onDisable() {
 
         getServer().getMessenger().unregisterOutgoingPluginChannel(this);
 
-        if (CloudAPI.getInstance() != null)
-        {
+        if (CloudAPI.getInstance() != null) {
             CloudServer.getInstance().updateDisable();
             CloudAPI.getInstance().shutdown();
         }
@@ -91,34 +85,26 @@ public final class BukkitBootstrap extends JavaPlugin implements Runnable {
 
     @Deprecated
     @Override
-    public void run()
-    {
+    public void run() {
         getServer().getPluginManager().disablePlugin(this);
         Bukkit.shutdown();
     }
 
-    private void checkRegistryAccess()
-    {
-        try
-        {
+    private void checkRegistryAccess() {
+        try {
             Class.forName("net.md_5.bungee.api.chat.BaseComponent");
-            Class.forName("de.dytanic.cloudnet.bridge.internal.chat.DocumentRegistry").getMethod("fire", new Class[0]).invoke(null, new Object[0]);
-        } catch (Exception ex)
-        {
+            Class.forName("de.dytanic.cloudnet.bridge.internal.chat.DocumentRegistry").getMethod("fire").invoke(null);
+        } catch (Exception ex) {
         }
     }
 
-    private void enableTasks()
-    {
+    private void enableTasks() {
         Bukkit.getScheduler().runTask(this, new Runnable() {
             @Override
-            public void run()
-            {
-                if (CloudServer.getInstance().getGroupData() != null)
-                {
+            public void run() {
+                if (CloudServer.getInstance().getGroupData() != null) {
                     if (CloudAPI.getInstance().getServerGroupData(CloudAPI.getInstance().getGroup()).getMode().equals(ServerGroupMode.LOBBY) ||
-                            CloudAPI.getInstance().getServerGroupData(CloudAPI.getInstance().getGroup()).getMode().equals(ServerGroupMode.STATIC_LOBBY))
-                    {
+                            CloudAPI.getInstance().getServerGroupData(CloudAPI.getInstance().getGroup()).getMode().equals(ServerGroupMode.STATIC_LOBBY)) {
                         getCommand("cloudserver").setExecutor(new CommandCloudServer());
                         getCommand("cloudserver").setPermission("cloudnet.command.cloudserver");
                     }
@@ -134,34 +120,27 @@ public final class BukkitBootstrap extends JavaPlugin implements Runnable {
                 if (CloudServer.getInstance().getServerConfig().getProperties().contains(NetworkUtils.DEV_PROPERTY) && CloudAPI.getInstance().getModuleProperties().contains("devservice"))
                     CloudServer.getInstance().registerCommand(new CommandCloudDeploy());
 
-                if (CloudServer.getInstance().getGroupData() != null)
-                {
+                if (CloudServer.getInstance().getGroupData() != null) {
                     getServer().getScheduler().runTaskTimer(BukkitBootstrap.this, new Runnable() {
                         @Override
-                        public void run()
-                        {
-                            try
-                            {
+                        public void run() {
+                            try {
                                 ServerListPingEvent serverListPingEvent = new ServerListPingEvent(
                                         new InetSocketAddress("127.0.0.1", 53345).getAddress(),
                                         CloudServer.getInstance().getMotd(), Bukkit.getOnlinePlayers().size(), CloudServer.getInstance().getMaxPlayers()
                                 );
                                 Bukkit.getPluginManager().callEvent(serverListPingEvent);
-                                if (!serverListPingEvent.getMotd().equals(CloudServer.getInstance().getMotd()))
-                                {
+                                if (!serverListPingEvent.getMotd().equals(CloudServer.getInstance().getMotd())) {
                                     CloudServer.getInstance().setMotd(serverListPingEvent.getMotd());
-                                    if (serverListPingEvent.getMotd().toLowerCase().contains("running") || serverListPingEvent.getMotd().toLowerCase().contains("ingame"))
-                                    {
+                                    if (serverListPingEvent.getMotd().toLowerCase().contains("running") || serverListPingEvent.getMotd().toLowerCase().contains("ingame")) {
                                         CloudServer.getInstance().changeToIngame();
                                     }
                                 }
 
-                                if (serverListPingEvent.getMaxPlayers() != CloudServer.getInstance().getMaxPlayers())
-                                {
+                                if (serverListPingEvent.getMaxPlayers() != CloudServer.getInstance().getMaxPlayers()) {
                                     CloudServer.getInstance().setMaxPlayers(serverListPingEvent.getMaxPlayers());
                                 }
-                            } catch (Exception ex)
-                            {
+                            } catch (Exception ex) {
                             }
                         }
                     }, 0, 5);
@@ -169,11 +148,9 @@ public final class BukkitBootstrap extends JavaPlugin implements Runnable {
 
                 if (CloudAPI.getInstance().getPermissionPool() != null &&
                         (getServer().getPluginManager().isPluginEnabled("VaultAPI") || getServer().getPluginManager().isPluginEnabled("Vault")))
-                    try
-                    {
-                        Class.forName("de.dytanic.cloudnet.bridge.vault.VaultInvoker").getMethod("invoke", new Class[0]).invoke(null, new Object[0]);
-                    } catch (IllegalAccessException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException e)
-                    {
+                    try {
+                        Class.forName("de.dytanic.cloudnet.bridge.vault.VaultInvoker").getMethod("invoke").invoke(null);
+                    } catch (IllegalAccessException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException e) {
                         e.printStackTrace();
                     }
             }

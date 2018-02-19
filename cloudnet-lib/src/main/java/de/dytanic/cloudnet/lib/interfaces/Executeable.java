@@ -6,6 +6,7 @@ package de.dytanic.cloudnet.lib.interfaces;
 public interface Executeable {
 
     boolean bootstrap() throws Exception;
+
     boolean shutdown();
 
 }

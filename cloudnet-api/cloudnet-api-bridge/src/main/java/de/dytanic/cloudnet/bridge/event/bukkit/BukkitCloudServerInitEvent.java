@@ -6,7 +6,6 @@ package de.dytanic.cloudnet.bridge.event.bukkit;
 
 import de.dytanic.cloudnet.bridge.CloudServer;
 import lombok.AllArgsConstructor;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
@@ -19,19 +18,16 @@ public class BukkitCloudServerInitEvent extends BukkitCloudEvent {
 
     private CloudServer cloudServer;
 
-    public CloudServer getCloudServer()
-    {
+    public static HandlerList getHandlerList() {
+        return handlerList;
+    }
+
+    public CloudServer getCloudServer() {
         return cloudServer;
     }
 
     @Override
-    public HandlerList getHandlers()
-    {
-        return handlerList;
-    }
-
-    public static HandlerList getHandlerList()
-    {
+    public HandlerList getHandlers() {
         return handlerList;
     }
 }

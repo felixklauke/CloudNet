@@ -9,8 +9,7 @@ package de.dytanic.cloudnet.lib.exception;
  */
 public class JavaReqVersionException extends RuntimeException {
 
-    public JavaReqVersionException()
-    {
+    public JavaReqVersionException() {
         super("You must have the java version 8! Please check out your Java Version with the command \"java -version\"");
     }
 }

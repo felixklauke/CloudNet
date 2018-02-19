@@ -25,8 +25,7 @@ public class DatabaseBasicHandlers {
 
     private WrapperSessionDatabase wrapperSessionDatabase;
 
-    public DatabaseBasicHandlers(DatabaseManager databaseManager)
-    {
+    public DatabaseBasicHandlers(DatabaseManager databaseManager) {
         Database config = databaseManager.getDatabase("cloud_internal_cfg");
 
         playerDatabase = new PlayerDatabase(databaseManager.getDatabase("cloudnet_internal_players"));
@@ -36,6 +35,6 @@ public class DatabaseBasicHandlers {
         commandDispatcherDatabase = new CommandDispatcherDatabase(config);
         wrapperSessionDatabase = new WrapperSessionDatabase(databaseManager.getDatabase("cloudnet_internal_wrapper_session"));
 
-        ((DatabaseImpl)config).save();
+        ((DatabaseImpl) config).save();
     }
 }
