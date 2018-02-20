@@ -78,11 +78,13 @@ public final class Wrapper
     public int getUsedMemory() {
         int mem = 0;
 
-        for (ProxyServer proxyServer : proxys.values())
+        for (ProxyServer proxyServer : proxys.values()) {
             mem = mem + proxyServer.getProxyInfo().getMemory();
+        }
 
-        for (MinecraftServer proxyServer : servers.values())
+        for (MinecraftServer proxyServer : servers.values()) {
             mem = mem + proxyServer.getProcessMeta().getMemory();
+        }
 
         return mem;
     }
@@ -107,26 +109,29 @@ public final class Wrapper
     public void disconnct() {
         this.wrapperInfo = null;
         this.maxMemory = 0;
-        for (MinecraftServer minecraftServer : servers.values())
+        for (MinecraftServer minecraftServer : servers.values()) {
             try {
                 minecraftServer.disconnect();
             } catch (Exception ex) {
 
             }
+        }
 
-        for (CloudServer cloudServer : cloudServers.values())
+        for (CloudServer cloudServer : cloudServers.values()) {
             try {
                 cloudServer.disconnect();
             } catch (Exception ex) {
 
             }
+        }
 
-        for (ProxyServer minecraftServer : proxys.values())
+        for (ProxyServer minecraftServer : proxys.values()) {
             try {
                 minecraftServer.disconnect();
             } catch (Exception ex) {
 
             }
+        }
 
         waitingServices.clear();
         servers.clear();
@@ -139,18 +144,20 @@ public final class Wrapper
         if (getChannel() == null) return this;
 
         java.util.Map<String, ServerGroup> groups = new ConcurrentHashMap<>();
-        for (ServerGroup serverGroup : CloudNet.getInstance().getServerGroups().values())
+        for (ServerGroup serverGroup : CloudNet.getInstance().getServerGroups().values()) {
             if (serverGroup.getWrapper().contains(networkInfo.getId())) {
                 groups.put(serverGroup.getName(), serverGroup);
                 sendPacket(new PacketOutCreateTemplate(serverGroup));
             }
+        }
 
         java.util.Map<String, ProxyGroup> proxyGroups = new ConcurrentHashMap<>();
-        for (ProxyGroup serverGroup : CloudNet.getInstance().getProxyGroups().values())
+        for (ProxyGroup serverGroup : CloudNet.getInstance().getProxyGroups().values()) {
             if (serverGroup.getWrapper().contains(networkInfo.getId())) {
                 proxyGroups.put(serverGroup.getName(), serverGroup);
                 sendPacket(new PacketOutCreateTemplate(serverGroup));
             }
+        }
 
         SimpledUser simpledUser = null;
         User user = CollectionWrapper.filter(CloudNet.getInstance().getUsers(), new Acceptable<User>() {
@@ -183,14 +190,17 @@ public final class Wrapper
     public Collection<Integer> getBinndedPorts() {
         Collection<Integer> ports = new ArrayList<>();
 
-        for (Quad<Integer, Integer, ServiceId, Template> serviceIdValues : waitingServices.values())
+        for (Quad<Integer, Integer, ServiceId, Template> serviceIdValues : waitingServices.values()) {
             ports.add(serviceIdValues.getFirst());
+        }
 
-        for (MinecraftServer minecraftServer : servers.values())
+        for (MinecraftServer minecraftServer : servers.values()) {
             ports.add(minecraftServer.getProcessMeta().getPort());
+        }
 
-        for (ProxyServer proxyServer : proxys.values())
+        for (ProxyServer proxyServer : proxys.values()) {
             ports.add(proxyServer.getProcessMeta().getPort());
+        }
 
         return ports;
     }

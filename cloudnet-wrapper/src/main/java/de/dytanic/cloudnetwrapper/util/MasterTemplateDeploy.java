@@ -85,7 +85,9 @@ public class MasterTemplateDeploy {
         }
         try (InputStream inputStream = urlConnection.getInputStream(); BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             String input;
-            while ((input = bufferedReader.readLine()) != null) ;
+            while ((input = bufferedReader.readLine()) != null) {
+                ;
+            }
         }
         System.out.println("Successfully deploy template [" + template.getName() + "]");
         urlConnection.disconnect();

@@ -299,8 +299,9 @@ public class ProxiedListener implements Listener {
             public void run() {
                 if (CloudProxy.getInstance().getProxyGroup() != null && CloudProxy.getInstance().getProxyGroup().getProxyConfig().isEnabled() &&
                         CloudProxy.getInstance().getProxyGroup().getProxyConfig().getTabList().isEnabled()) {
-                    for (ProxiedPlayer proxiedPlayer : ProxyServer.getInstance().getPlayers())
+                    for (ProxiedPlayer proxiedPlayer : ProxyServer.getInstance().getPlayers()) {
                         initTabHeaderFooter(proxiedPlayer);
+                    }
                 }
             }
         });

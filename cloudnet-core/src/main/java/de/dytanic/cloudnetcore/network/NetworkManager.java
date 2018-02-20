@@ -257,8 +257,9 @@ public final class NetworkManager {
     public int getOnlineCount() {
         int atomicInteger = 0;
 
-        for (ProxyServer proxyServer : CloudNet.getInstance().getProxys().values())
+        for (ProxyServer proxyServer : CloudNet.getInstance().getProxys().values()) {
             atomicInteger += proxyServer.getProxyInfo().getOnlineCount();
+        }
 
         return atomicInteger;
     }
@@ -281,17 +282,20 @@ public final class NetworkManager {
                     if (cn.getChannel() != null && filter.accept(cn))
                         cn.sendPacket(packet);
 
-                    for (ProxyServer proxyServer : cn.getProxys().values())
+                    for (ProxyServer proxyServer : cn.getProxys().values()) {
                         if (proxyServer.getChannel() != null && filter.accept(proxyServer))
                             proxyServer.sendPacket(packet);
+                    }
 
-                    for (MinecraftServer minecraftServer : cn.getServers().values())
+                    for (MinecraftServer minecraftServer : cn.getServers().values()) {
                         if (minecraftServer.getChannel() != null && filter.accept(minecraftServer))
                             minecraftServer.sendPacket(packet);
+                    }
 
-                    for (CloudServer cloudServer : cn.getCloudServers().values())
+                    for (CloudServer cloudServer : cn.getCloudServers().values()) {
                         if (cloudServer.getChannel() != null && filter.accept(cloudServer))
                             cloudServer.sendPacket(packet);
+                    }
 
                 }
             }
@@ -396,8 +400,9 @@ public final class NetworkManager {
         cloudNetwork.setWebPort(CloudNet.getInstance().getConfig().getWebServerConfig().getPort());
         //cloudNetwork.setDevServices(CloudNet.getInstance().getConfig().isCloudDevServices());
         Collection<WrapperInfo> wrappers = new LinkedList<>();
-        for (Wrapper wrapper : CloudNet.getInstance().getWrappers().values())
+        for (Wrapper wrapper : CloudNet.getInstance().getWrappers().values()) {
             if (wrapper.getWrapperInfo() != null) wrappers.add(wrapper.getWrapperInfo());
+        }
         cloudNetwork.setWrappers(wrappers);
         cloudNetwork.setServerGroups(MapWrapper.transform(
                 CloudNet.getInstance().getServerGroups(), new Catcher<String, String>() {

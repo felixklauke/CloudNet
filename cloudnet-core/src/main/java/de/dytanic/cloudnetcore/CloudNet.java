@@ -286,8 +286,9 @@ public final class CloudNet implements Executeable, Runnable, Reloadable {
             this.moduleManager.loadModules().enableModules();
 
         System.out.println("Updating wrappers...");
-        for (Wrapper wrapper : wrappers.values())
+        for (Wrapper wrapper : wrappers.values()) {
             wrapper.updateWrapper();
+        }
 
         networkManager.reload();
         networkManager.updateAll();
@@ -566,10 +567,12 @@ public final class CloudNet implements Executeable, Runnable, Reloadable {
 
     public int getOnlineCount(String group) {
         int onlineCount = 0;
-        for (Wrapper wrapper : wrappers.values())
-            for (MinecraftServer minecraftServer : wrapper.getServers().values())
+        for (Wrapper wrapper : wrappers.values()) {
+            for (MinecraftServer minecraftServer : wrapper.getServers().values()) {
                 if (minecraftServer.getServiceId().getGroup().equalsIgnoreCase(group))
                     onlineCount = onlineCount + minecraftServer.getServerInfo().getOnlineCount();
+            }
+        }
         return onlineCount;
     }
 
@@ -582,7 +585,9 @@ public final class CloudNet implements Executeable, Runnable, Reloadable {
                 return key.getId();
             }
         });
-        while (collection.contains(id)) id++;
+        while (collection.contains(id)) {
+            id++;
+        }
 
         return new ServiceId(proxyGroup.getName(), id, UUID.randomUUID(), wrapper.getNetworkInfo().getId(), proxyGroup.getName() + config.getFormatSplitter() + id);
     }
@@ -596,7 +601,9 @@ public final class CloudNet implements Executeable, Runnable, Reloadable {
                 return key.getId();
             }
         });
-        while (collection.contains(id)) id++;
+        while (collection.contains(id)) {
+            id++;
+        }
 
         return new ServiceId(proxyGroup.getName(), id, uuid, wrapper.getNetworkInfo().getId(), proxyGroup.getName() + config.getFormatSplitter() + id);
     }
@@ -614,7 +621,9 @@ public final class CloudNet implements Executeable, Runnable, Reloadable {
                 return key.getId();
             }
         });
-        while (collection.contains(id)) id++;
+        while (collection.contains(id)) {
+            id++;
+        }
 
         return new ServiceId(serverGroup.getName(), id, UUID.randomUUID(), wrapper.getNetworkInfo().getId(), serverGroup.getName() + config.getFormatSplitter() + id);
     }
@@ -628,7 +637,9 @@ public final class CloudNet implements Executeable, Runnable, Reloadable {
                 return key.getId();
             }
         });
-        while (collection.contains(id)) id++;
+        while (collection.contains(id)) {
+            id++;
+        }
 
         return new ServiceId(serverGroup.getName(), id, UUID.randomUUID(), wrapper.getNetworkInfo().getId(), serverId);
     }
@@ -650,7 +661,9 @@ public final class CloudNet implements Executeable, Runnable, Reloadable {
                 return key.getId();
             }
         });
-        while (collection.contains(id)) id++;
+        while (collection.contains(id)) {
+            id++;
+        }
         return new ServiceId(serverGroup.getName(), id, uniqueId, wrapper.getNetworkInfo().getId(), serverGroup.getName() + config.getFormatSplitter() + id);
     }
 
@@ -671,7 +684,9 @@ public final class CloudNet implements Executeable, Runnable, Reloadable {
                 return key.getId();
             }
         });
-        while (collection.contains(id)) id++;
+        while (collection.contains(id)) {
+            id++;
+        }
         return new ServiceId(serverGroup.getName(), id, uniqueId, wrapper.getNetworkInfo().getId(), serverId);
     }
 
@@ -722,27 +737,30 @@ public final class CloudNet implements Executeable, Runnable, Reloadable {
     public Collection<MinecraftServer> getServers(String group) {
         Collection<MinecraftServer> minecraftServers = new LinkedList<>();
 
-        for (MinecraftServer minecraftServer : getServers().values())
+        for (MinecraftServer minecraftServer : getServers().values()) {
             if (minecraftServer.getServiceId().getGroup().equalsIgnoreCase(group))
                 minecraftServers.add(minecraftServer);
+        }
         return minecraftServers;
     }
 
     public Collection<CloudServer> getCloudGameServers(String group) {
         Collection<CloudServer> minecraftServers = new LinkedList<>();
 
-        for (CloudServer minecraftServer : getCloudGameServers().values())
+        for (CloudServer minecraftServer : getCloudGameServers().values()) {
             if (minecraftServer.getServiceId().getGroup().equalsIgnoreCase(group))
                 minecraftServers.add(minecraftServer);
+        }
         return minecraftServers;
     }
 
     public Collection<ProxyServer> getProxys(String group) {
         Collection<ProxyServer> minecraftServers = new LinkedList<>();
 
-        for (ProxyServer minecraftServer : getProxys().values())
+        for (ProxyServer minecraftServer : getProxys().values()) {
             if (minecraftServer.getServiceId().getGroup().equalsIgnoreCase(group))
                 minecraftServers.add(minecraftServer);
+        }
         return minecraftServers;
     }
 
@@ -859,8 +877,9 @@ public final class CloudNet implements Executeable, Runnable, Reloadable {
     public Map<String, CloudServer> getCloudGameServers() {
         Map<String, CloudServer> cloudServerMap = new HashMap<>();
 
-        for (Wrapper wrapper : wrappers.values())
+        for (Wrapper wrapper : wrappers.values()) {
             NetworkUtils.addAll(cloudServerMap, wrapper.getCloudServers());
+        }
 
         return cloudServerMap;
     }
@@ -891,16 +910,22 @@ public final class CloudNet implements Executeable, Runnable, Reloadable {
 
     public Collection<String> getServersByName() {
         Collection<String> x = new LinkedList<>();
-        for (Wrapper wrapper : wrappers.values())
-            for (MinecraftServer minecraftServer : wrapper.getServers().values()) x.add(minecraftServer.getServerId());
+        for (Wrapper wrapper : wrappers.values()) {
+            for (MinecraftServer minecraftServer : wrapper.getServers().values()) {
+                x.add(minecraftServer.getServerId());
+            }
+        }
 
         return x;
     }
 
     public Collection<String> getProxysByName() {
         Collection<String> x = new LinkedList<>();
-        for (Wrapper wrapper : wrappers.values())
-            for (ProxyServer minecraftServer : wrapper.getProxys().values()) x.add(minecraftServer.getServerId());
+        for (Wrapper wrapper : wrappers.values()) {
+            for (ProxyServer minecraftServer : wrapper.getProxys().values()) {
+                x.add(minecraftServer.getServerId());
+            }
+        }
 
         return x;
     }
@@ -908,9 +933,11 @@ public final class CloudNet implements Executeable, Runnable, Reloadable {
     public java.util.Map<String, MinecraftServer> getServers() {
         java.util.Map<String, MinecraftServer> minecraftServerMap = new HashMap<>();
 
-        for (Wrapper wrapper : wrappers.values())
-            for (MinecraftServer minecraftServer : wrapper.getServers().values())
+        for (Wrapper wrapper : wrappers.values()) {
+            for (MinecraftServer minecraftServer : wrapper.getServers().values()) {
                 minecraftServerMap.put(minecraftServer.getServerId(), minecraftServer);
+            }
+        }
 
         return minecraftServerMap;
     }
@@ -918,25 +945,31 @@ public final class CloudNet implements Executeable, Runnable, Reloadable {
     public java.util.Map<String, ProxyServer> getProxys() {
         java.util.Map<String, ProxyServer> minecraftServerMap = new HashMap<>();
 
-        for (Wrapper wrapper : wrappers.values())
-            for (ProxyServer minecraftServer : wrapper.getProxys().values())
+        for (Wrapper wrapper : wrappers.values()) {
+            for (ProxyServer minecraftServer : wrapper.getProxys().values()) {
                 minecraftServerMap.put(minecraftServer.getServerId(), minecraftServer);
+            }
+        }
 
         return minecraftServerMap;
     }
 
     public MinecraftServer getServer(String serverId) {
-        for (Wrapper wrapper : wrappers.values())
-            for (MinecraftServer minecraftServer : wrapper.getServers().values())
+        for (Wrapper wrapper : wrappers.values()) {
+            for (MinecraftServer minecraftServer : wrapper.getServers().values()) {
                 if (minecraftServer.getServerId().equals(serverId)) return minecraftServer;
+            }
+        }
 
         return null;
     }
 
     public ProxyServer getProxy(String serverId) {
-        for (Wrapper wrapper : wrappers.values())
-            for (ProxyServer minecraftServer : wrapper.getProxys().values())
+        for (Wrapper wrapper : wrappers.values()) {
+            for (ProxyServer minecraftServer : wrapper.getProxys().values()) {
                 if (minecraftServer.getServerId().equals(serverId)) return minecraftServer;
+            }
+        }
 
         return null;
     }
@@ -1351,11 +1384,12 @@ public final class CloudNet implements Executeable, Runnable, Reloadable {
         }
 
         Template template = null;
-        for (Template t : serverGroup.getTemplates())
+        for (Template t : serverGroup.getTemplates()) {
             if (entry.getKey().equalsIgnoreCase(t.getName())) {
                 template = t;
                 break;
             }
+        }
 
         if (template == null) return;
         int startport = wrapper.getWrapperInfo().getStartPort();

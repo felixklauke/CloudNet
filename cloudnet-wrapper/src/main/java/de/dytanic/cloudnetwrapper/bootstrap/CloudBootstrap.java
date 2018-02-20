@@ -103,7 +103,7 @@ public class CloudBootstrap {
             System.out.println("Use the command \"help\" for further information!");
             String commandLine;
 
-            while (true)
+            while (true) {
                 try {
                     while ((commandLine = cloudNetLogging.getReader().readLine()) != null) {
                         if (!cloudNetWrapper.getCommandManager().dispatchCommand(commandLine)) {
@@ -113,8 +113,11 @@ public class CloudBootstrap {
                 } catch (Exception ex) {
 
                 }
+            }
         } else {
-            while (true) NetworkUtils.sleepUninterruptedly(Long.MAX_VALUE);
+            while (true) {
+                NetworkUtils.sleepUninterruptedly(Long.MAX_VALUE);
+            }
         }
     }
 }

@@ -151,7 +151,9 @@ public class VaultPermissionImpl extends Permission {
     public String[] getGroups() {
         String[] groups = new String[CloudAPI.getInstance().getPermissionPool().getGroups().size()];
         int i = 0;
-        for (String group : CloudAPI.getInstance().getPermissionPool().getGroups().keySet()) groups[i++] = group;
+        for (String group : CloudAPI.getInstance().getPermissionPool().getGroups().keySet()) {
+            groups[i++] = group;
+        }
 
         return groups;
     }

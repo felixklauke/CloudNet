@@ -194,11 +194,13 @@ public class BungeeCord implements ServerDispatcher {
             if (proxyProcessMeta.getUrl() != null) {
 
                 Files.createDirectory(Paths.get(path + "/plugins"));
-                for (ServerInstallablePlugin plugin : proxyProcessMeta.getDownloadablePlugins())
+                for (ServerInstallablePlugin plugin : proxyProcessMeta.getDownloadablePlugins()) {
                     FileCopy.copyFileToDirectory(new File("local/cache/web_plugins/" + plugin.getName() + ".jar"), new File(path + "/plugins"));
+                }
 
-                for (ServerInstallablePlugin plugin : proxyGroup.getTemplate().getInstallablePlugins())
+                for (ServerInstallablePlugin plugin : proxyGroup.getTemplate().getInstallablePlugins()) {
                     FileCopy.copyFileToDirectory(new File("local/cache/web_plugins/" + plugin.getName() + ".jar"), new File(path + "/plugins"));
+                }
 
                 TemplateLoader templateLoader = new TemplateLoader(proxyProcessMeta.getUrl(), "local/templates/" + proxyGroup.getName() + "/template.zip");
                 System.out.println("Downloading template for " + this.proxyProcessMeta.getServiceId().getServerId());
@@ -315,11 +317,13 @@ public class BungeeCord implements ServerDispatcher {
         StringBuilder commandBuilder = new StringBuilder();
         commandBuilder.append("java ");
 
-        for (String command : proxyProcessMeta.getProcessParameters())
+        for (String command : proxyProcessMeta.getProcessParameters()) {
             commandBuilder.append(command).append(" ");
+        }
 
-        for (String command : proxyGroup.getTemplate().getProcessPreParameters())
+        for (String command : proxyGroup.getTemplate().getProcessPreParameters()) {
             commandBuilder.append(command).append(" ");
+        }
 
         //commandBuilder.append("-XX:+UseG1GC -XX:MaxGCPauseMillis=50 -Djline.terminal=jline.UnsupportedTerminal -XX:MaxPermSize=256M -DIReallyKnowWhatIAmDoingISwear=true -Xmx" + proxyProcessMeta.getMemory() + "M -jar BungeeCord.jar -o true -p");
         commandBuilder.append("-XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:MaxPermSize=256M -XX:-UseAdaptiveSizePolicy -Dio.netty.leakDetectionLevel=DISABLED -Dfile.encoding=UTF-8 -Dio.netty.maxDirectMemory=0 -Dio.netty.recycler.maxCapacity=0 -Dio.netty.recycler.maxCapacity.default=0 -Djline.terminal=jline.UnsupportedTerminal -DIReallyKnowWhatIAmDoingISwear=true -Xmx" + proxyProcessMeta.getMemory() + "M -jar BungeeCord.jar -o true -p");

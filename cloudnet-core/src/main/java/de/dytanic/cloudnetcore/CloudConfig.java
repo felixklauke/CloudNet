@@ -332,8 +332,9 @@ public class CloudConfig {
             Collection<ServerGroup> collection = serviceDocument.getObject("serverGroups", new TypeToken<Collection<ServerGroup>>() {
             }.getType());
 
-            for (ServerGroup serverGroup : collection)
+            for (ServerGroup serverGroup : collection) {
                 createGroup(serverGroup);
+            }
 
             serviceDocument.remove("serverGroups");
             serviceDocument.saveAsConfig(servicePath);

@@ -54,7 +54,9 @@ public class CloudFlareService {
     public boolean bootstrap(Map<String, SimpledWrapperInfo> wrapperInfoMap, Map<String, ProxyGroup> groups, CloudFlareDatabase cloudFlareDatabase) {
         if (!cloudFlareConfig.isEnabled()) return false;
 
-        for (String id : cloudFlareDatabase.getAndRemove()) this.deleteRecord(id);
+        for (String id : cloudFlareDatabase.getAndRemove()) {
+            this.deleteRecord(id);
+        }
 
         for (String key : cloudFlareDatabase.getAll()) {
             if (!key.equalsIgnoreCase(Database.UNIQUE_NAME_KEY) && !wrapperInfoMap.containsKey(key)) {
@@ -86,7 +88,9 @@ public class CloudFlareService {
             this.deleteRecord(postResponse.getId());
         }
 
-        for (String id : cloudFlareDatabase.getAndRemove()) this.deleteRecord(id);
+        for (String id : cloudFlareDatabase.getAndRemove()) {
+            this.deleteRecord(id);
+        }
         return true;
     }
 

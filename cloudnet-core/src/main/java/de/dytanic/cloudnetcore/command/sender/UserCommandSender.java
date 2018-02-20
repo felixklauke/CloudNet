@@ -38,8 +38,9 @@ public class UserCommandSender implements CommandSender {
 
     @Override
     public void sendMessage(String... message) {
-        for (String m : message)
+        for (String m : message) {
             System.out.println(m);
+        }
     }
 
     @Override

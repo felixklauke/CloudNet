@@ -54,8 +54,9 @@ public class CommandPermissions extends Command {
                         sender.sendMessage("Implementations: " + permissionGroup.getImplementGroups());
                         sender.sendMessage("TagId: " + permissionGroup.getTagId());
                         sender.sendMessage("JoinPower: " + permissionGroup.getJoinPower());
-                        for (Map.Entry<String, Boolean> x : permissionGroup.getPermissions().entrySet())
+                        for (Map.Entry<String, Boolean> x : permissionGroup.getPermissions().entrySet()) {
                             sender.sendMessage("- " + x.getKey() + ":" + x.getValue());
+                        }
                         sender.sendMessage(" ");
                         sender.sendMessage("Permissions for server groups:");
                         for (Map.Entry<String, List<String>> x : permissionGroup.getServerGroupPermissions().entrySet()) {

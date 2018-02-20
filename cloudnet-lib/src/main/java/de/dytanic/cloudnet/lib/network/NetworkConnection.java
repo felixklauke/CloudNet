@@ -122,14 +122,16 @@ public class NetworkConnection implements PacketSender {
         if (channel == null) return;
 
         if (channel.eventLoop().inEventLoop()) {
-            for (Packet packet : packets)
+            for (Packet packet : packets) {
                 channel.writeAndFlush(packet);
+            }
         } else {
             channel.eventLoop().execute(new Runnable() {
                 @Override
                 public void run() {
-                    for (Packet packet : packets)
+                    for (Packet packet : packets) {
                         channel.writeAndFlush(packet);
+                    }
                 }
             });
         }

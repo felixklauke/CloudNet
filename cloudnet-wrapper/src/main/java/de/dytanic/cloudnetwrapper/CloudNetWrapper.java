@@ -196,11 +196,13 @@ public final class CloudNetWrapper implements Executeable, Runnable, ShutdownOnC
 
     public int getUsedMemory() {
         int m = 0;
-        for (GameServer gameServer : servers.values())
+        for (GameServer gameServer : servers.values()) {
             m = m + gameServer.getServerProcess().getMeta().getMemory();
+        }
 
-        for (BungeeCord bungeeCord : proxys.values())
+        for (BungeeCord bungeeCord : proxys.values()) {
             m = m + bungeeCord.getProxyProcessMeta().getMemory();
+        }
 
         return m;
     }
@@ -232,14 +234,17 @@ public final class CloudNetWrapper implements Executeable, Runnable, ShutdownOnC
         if (serverProcessQueue != null)
             serverProcessQueue.setRunning(false);
 
-        for (GameServer gameServer : servers.values())
+        for (GameServer gameServer : servers.values()) {
             gameServer.shutdown();
+        }
 
-        for (BungeeCord gameServer : proxys.values())
+        for (BungeeCord gameServer : proxys.values()) {
             gameServer.shutdown();
+        }
 
-        for (CloudGameServer gameServer : cloudservers.values())
+        for (CloudGameServer gameServer : cloudservers.values()) {
             gameServer.shutdown();
+        }
 
         this.cloudNetLogging.shutdownAll();
         if (networkConnection.getChannel() != null)
@@ -278,11 +283,13 @@ public final class CloudNetWrapper implements Executeable, Runnable, ShutdownOnC
             serverProcessQueue.setRunning(false);
         }
 
-        for (GameServer gameServer : servers.values())
+        for (GameServer gameServer : servers.values()) {
             gameServer.shutdown();
+        }
 
-        for (BungeeCord gameServer : proxys.values())
+        for (BungeeCord gameServer : proxys.values()) {
             gameServer.shutdown();
+        }
 
         proxyGroups.clear();
         serverGroups.clear();

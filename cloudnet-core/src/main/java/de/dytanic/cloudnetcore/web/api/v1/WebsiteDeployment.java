@@ -89,8 +89,9 @@ public class WebsiteDeployment extends MethodWebHandlerAdapter {
                             .append(document.getString("group"))
                             .append("/")
                             .append(document.getString("template"));
-                    for (ZipEntry zipEntry : Collections.list(zipFile.entries()))
+                    for (ZipEntry zipEntry : Collections.list(zipFile.entries())) {
                         extractEntry(zipFile, zipEntry, stringBuilder.toString());
+                    }
                     file.delete();
                     System.out.println("Template deployed [\"" + document.getString("template") + "\"] for the group [\"" + document.getString("group") + "\"]");
                 }
@@ -110,8 +111,9 @@ public class WebsiteDeployment extends MethodWebHandlerAdapter {
                 }
 
                 ZipFile zipFile = new ZipFile(file);
-                for (ZipEntry zipEntry : Collections.list(zipFile.entries()))
+                for (ZipEntry zipEntry : Collections.list(zipFile.entries())) {
                     extractEntry(zipFile, zipEntry, "local/servers/" + payload);
+                }
                 file.delete();
                 System.out.println("Custom server deployed \"" + payload + "\"");
             }
@@ -138,8 +140,9 @@ public class WebsiteDeployment extends MethodWebHandlerAdapter {
                 os = new FileOutputStream(file);
 
                 int len;
-                while ((len = is.read(BUFFER)) != -1)
+                while ((len = is.read(BUFFER)) != -1) {
                     os.write(BUFFER, 0, len);
+                }
             } finally {
                 if (os != null) os.close();
                 if (is != null) is.close();

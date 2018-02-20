@@ -41,9 +41,10 @@ public class BukkitListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void handle0(AsyncPlayerPreLoginEvent e) {
-        for (Player all : Bukkit.getOnlinePlayers())
+        for (Player all : Bukkit.getOnlinePlayers()) {
             if (all.getUniqueId().equals(e.getUniqueId()))
                 e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, ChatColor.translateAlternateColorCodes('&', CloudAPI.getInstance().getCloudNetwork().getMessages().getString("server-kick-proxy-disallow")));
+        }
     }
 
     @EventHandler

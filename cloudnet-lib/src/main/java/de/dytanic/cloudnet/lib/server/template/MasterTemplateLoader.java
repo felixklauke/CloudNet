@@ -93,8 +93,9 @@ public class MasterTemplateLoader {
                 os = new FileOutputStream(file);
 
                 int len;
-                while ((len = is.read(buffer)) != -1)
+                while ((len = is.read(buffer)) != -1) {
                     os.write(buffer, 0, len);
+                }
             } finally {
                 if (os != null) os.close();
                 if (is != null) is.close();

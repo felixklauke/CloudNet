@@ -184,11 +184,13 @@ public class GameServer implements ServerDispatcher {
             if (!Files.exists(dir)) if (!a()) return false;
         } else if (!a()) return false;
 
-        for (ServerInstallablePlugin plugin : serverProcess.getMeta().getDownloadablePlugins())
+        for (ServerInstallablePlugin plugin : serverProcess.getMeta().getDownloadablePlugins()) {
             FileCopy.copyFileToDirectory(new File("local/cache/web_plugins/" + plugin.getName() + ".jar"), new File(path + "/plugins"));
+        }
 
-        for (ServerInstallablePlugin plugin : serverProcess.getMeta().getTemplate().getInstallablePlugins())
+        for (ServerInstallablePlugin plugin : serverProcess.getMeta().getTemplate().getInstallablePlugins()) {
             FileCopy.copyFileToDirectory(new File("local/cache/web_plugins/" + plugin.getName() + ".jar"), new File(path + "/plugins"));
+        }
 
         serverProcess.setServerStage(ServerStage.COPY);
 

@@ -48,11 +48,12 @@ public final class EventManager implements IEventManager {
         try {
             Class clazz = getClazz(eventListener);
             if (registeredListeners.containsKey(clazz))
-                for (EventEntity eventEntity : registeredListeners.get(clazz))
+                for (EventEntity eventEntity : registeredListeners.get(clazz)) {
                     if (eventEntity.getEventListener().equals(eventListener)) {
                         registeredListeners.get(clazz).remove(eventEntity);
                         return;
                     }
+                }
         } catch (Exception e) {
             e.printStackTrace();
         }

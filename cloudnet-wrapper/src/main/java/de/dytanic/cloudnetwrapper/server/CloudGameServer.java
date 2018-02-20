@@ -187,11 +187,13 @@ public class CloudGameServer implements ServerDispatcher {
         }
 
         //Init
-        for (ServerInstallablePlugin plugin : cloudServerMeta.getPlugins())
+        for (ServerInstallablePlugin plugin : cloudServerMeta.getPlugins()) {
             FileCopy.copyFileToDirectory(new File("local/cache/web_plugins/" + plugin.getName() + ".jar"), new File(path + "/plugins"));
+        }
 
-        for (ServerInstallablePlugin plugin : cloudServerMeta.getPlugins())
+        for (ServerInstallablePlugin plugin : cloudServerMeta.getPlugins()) {
             FileCopy.copyFileToDirectory(new File("local/cache/web_plugins/" + plugin.getName() + ".jar"), new File(path + "/plugins"));
+        }
 
         if (cloudServerMeta.getServerGroupType().equals(ServerGroupType.BUKKIT))
             if (!Files.exists(Paths.get(path + "/spigot.jar")))
@@ -424,8 +426,9 @@ public class CloudGameServer implements ServerDispatcher {
                 os = new FileOutputStream(file);
 
                 int len;
-                while ((len = is.read(BUFFER)) != -1)
+                while ((len = is.read(BUFFER)) != -1) {
                     os.write(BUFFER, 0, len);
+                }
             } finally {
                 if (os != null) os.close();
                 if (is != null) is.close();

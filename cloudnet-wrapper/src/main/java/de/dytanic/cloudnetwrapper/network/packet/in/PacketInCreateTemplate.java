@@ -203,8 +203,9 @@ public final class PacketInCreateTemplate extends PacketInHandler {
                 os = new FileOutputStream(file);
 
                 int len;
-                while ((len = is.read(BUFFER)) != -1)
+                while ((len = is.read(BUFFER)) != -1) {
                     os.write(BUFFER, 0, len);
+                }
             } finally {
                 if (os != null) os.close();
                 if (is != null) is.close();

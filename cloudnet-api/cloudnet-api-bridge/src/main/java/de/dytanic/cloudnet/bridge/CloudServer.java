@@ -115,8 +115,9 @@ public class CloudServer implements ICloudService {
      */
     public void update() {
         List<String> list = new CopyOnWriteArrayList<>();
-        for (Player all : Bukkit.getOnlinePlayers())
+        for (Player all : Bukkit.getOnlinePlayers()) {
             list.add(all.getName());
+        }
 
         ServerInfo serverInfo = new ServerInfo(CloudAPI.getInstance().getServiceId(), hostAdress,
                 port, true, list, memory, motd, Bukkit.getOnlinePlayers().size(), maxPlayers, serverState, serverConfig, template);
@@ -125,8 +126,9 @@ public class CloudServer implements ICloudService {
 
     public void updateDisable() {
         List<String> list = new CopyOnWriteArrayList<>();
-        for (Player all : Bukkit.getOnlinePlayers())
+        for (Player all : Bukkit.getOnlinePlayers()) {
             list.add(all.getName());
+        }
 
         ServerInfo serverInfo = new ServerInfo(CloudAPI.getInstance().getServiceId(), hostAdress, port, false, list, memory, motd, Bukkit.getOnlinePlayers().size(), maxPlayers, serverState, serverConfig, template);
         CloudAPI.getInstance().getNetworkConnection().sendPacketSynchronized(new PacketOutUpdateServerInfo(serverInfo));

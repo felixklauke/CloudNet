@@ -32,12 +32,16 @@ public class CloudPlayerCommandSender implements CommandSender {
 
     @Override
     public void sendMessages(String... strings) {
-        for (String m : strings) sendMessage(m);
+        for (String m : strings) {
+            sendMessage(m);
+        }
     }
 
     @Override
     public void sendMessage(BaseComponent... baseComponents) {
-        for (BaseComponent m : baseComponents) sendMessage(m);
+        for (BaseComponent m : baseComponents) {
+            sendMessage(m);
+        }
     }
 
     @Override

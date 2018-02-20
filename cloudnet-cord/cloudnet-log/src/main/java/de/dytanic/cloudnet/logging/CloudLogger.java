@@ -89,7 +89,9 @@ public class CloudLogger
     }
 
     public void shutdownAll() {
-        for (Handler handler : getHandlers()) handler.close();
+        for (Handler handler : getHandlers()) {
+            handler.close();
+        }
         try {
             this.reader.killLine();
         } catch (IOException e) {
@@ -117,7 +119,9 @@ public class CloudLogger
         @Override
         public void publish(LogRecord record) {
             String formatMessage = getFormatter().formatMessage(record);
-            for (ICloudLoggerHandler handler : CloudLogger.this.getHandler()) handler.handleConsole(formatMessage);
+            for (ICloudLoggerHandler handler : CloudLogger.this.getHandler()) {
+                handler.handleConsole(formatMessage);
+            }
 
             if (isLoggable(record)) handle(getFormatter().format(record));
         }

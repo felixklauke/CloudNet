@@ -132,8 +132,9 @@ public final class MobSelector {
     public Inventory create(MobConfig mobConfig, ServerMob mob) {
         Inventory inventory = Bukkit.createInventory(null, mobConfig.getInventorySize(), ChatColor.translateAlternateColorCodes('&', mob.getDisplay() + " "));
 
-        for (Map.Entry<Integer, MobItemLayout> mobItem : mobConfig.getDefaultItemInventory().entrySet())
+        for (Map.Entry<Integer, MobItemLayout> mobItem : mobConfig.getDefaultItemInventory().entrySet()) {
             inventory.setItem(mobItem.getKey() - 1, transform(mobItem.getValue()));
+        }
         return inventory;
     }
 
@@ -232,7 +233,7 @@ public final class MobSelector {
     public void handleUpdate(ServerInfo serverInfo) {
         if (serverInfo.getServiceId().getGroup() == null) return;
 
-        for (MobImpl mob : this.mobs.values())
+        for (MobImpl mob : this.mobs.values()) {
             if (mob.getMob().getTargetGroup().equals(serverInfo.getServiceId().getGroup())) {
                 mob.getEntity().setTicksLived(Integer.MAX_VALUE);
                 updateCustom(mob.getMob(), mob.getDisplayMessage());
@@ -247,8 +248,9 @@ public final class MobSelector {
                 for (ServerInfo server : serverInfos) {
                     if (server.isOnline() && server.getServerState().equals(ServerState.LOBBY) && !server.getServerConfig().isHideServer() && !server.getServerConfig()
                             .getProperties().contains(NetworkUtils.DEV_PROPERTY)) {
-                        while (mobConfig.getDefaultItemInventory().containsKey((index.getValue() + 1)))
+                        while (mobConfig.getDefaultItemInventory().containsKey((index.getValue() + 1))) {
                             index.setValue(index.getValue() + 1);
+                        }
 
                         if ((mobConfig.getInventorySize() - 1) <= index.getValue()) break;
 
@@ -270,6 +272,7 @@ public final class MobSelector {
                     index.setValue(index.getValue() + 1);
                 }
             }
+        }
     }
 
     public void updateCustom(ServerMob serverMob, Object armorStand) {
@@ -362,12 +365,13 @@ public final class MobSelector {
 
                         List<ServerInfo> serverInfos = getServers(mobImpl.getMob().getTargetGroup());
 
-                        for (ServerInfo serverInfo : serverInfos)
+                        for (ServerInfo serverInfo : serverInfos) {
                             if (serverInfo.getOnlineCount() < serverInfo.getMaxPlayers() && serverInfo.getServerState().equals(ServerState.LOBBY)) {
                                 byteArrayDataOutput.writeUTF(serverInfo.getServiceId().getServerId());
                                 e.getPlayer().sendPluginMessage(CloudServer.getInstance().getPlugin(), "BungeeCord", byteArrayDataOutput.toByteArray());
                                 return;
                             }
+                        }
                     } else e.getPlayer().openInventory(mobImpl.getInventory());
                 } else
                     e.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', CloudAPI.getInstance().getCloudNetwork().getMessages().getString("mob-selector-maintenance-message")));

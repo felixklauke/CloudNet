@@ -74,8 +74,9 @@ public class TemplateLoader {
                 os = new FileOutputStream(file);
 
                 int len;
-                while ((len = is.read(bytes)) != -1)
+                while ((len = is.read(bytes)) != -1) {
                     os.write(bytes, 0, len);
+                }
             } finally {
                 if (os != null) os.close();
                 if (is != null) is.close();

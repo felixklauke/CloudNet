@@ -311,9 +311,10 @@ public class CloudProxy implements ICloudService, PlayerChatExecutor {
             cachedServers.put(serverInfo.getServiceId().getServerId(), serverInfo);
 
             if (CloudAPI.getInstance().getModuleProperties().contains("notifyService") && CloudAPI.getInstance().getModuleProperties().getBoolean("notifyService"))
-                for (ProxiedPlayer proxiedPlayer : ProxyServer.getInstance().getPlayers())
+                for (ProxiedPlayer proxiedPlayer : ProxyServer.getInstance().getPlayers()) {
                     if (proxiedPlayer.hasPermission("cloudnet.notify"))
                         proxiedPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', CloudAPI.getInstance().getCloudNetwork().getMessages().getString("notify-message-server-add").replace("%server%", serverInfo.getServiceId().getServerId())));
+                }
 
         }
 
@@ -342,9 +343,10 @@ public class CloudProxy implements ICloudService, PlayerChatExecutor {
                 });
 
             if (CloudAPI.getInstance().getModuleProperties().contains("notifyService") && CloudAPI.getInstance().getModuleProperties().getBoolean("notifyService"))
-                for (ProxiedPlayer proxiedPlayer : ProxyServer.getInstance().getPlayers())
+                for (ProxiedPlayer proxiedPlayer : ProxyServer.getInstance().getPlayers()) {
                     if (proxiedPlayer.hasPermission("cloudnet.notify"))
                         proxiedPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', CloudAPI.getInstance().getCloudNetwork().getMessages().getString("notify-message-server-remove").replace("%server%", serverInfo.getServiceId().getServerId())));
+                }
         }
 
         @Override

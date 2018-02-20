@@ -351,8 +351,9 @@ public class TaskScheduler {
     public <V> Collection<TaskEntryFuture<V>> schedule(Collection<TaskEntry<V>> threadEntries) {
 
         Collection<TaskEntryFuture<V>> TaskEntryFutures = new ArrayList<TaskEntryFuture<V>>();
-        for (TaskEntry<V> entry : threadEntries)
+        for (TaskEntry<V> entry : threadEntries) {
             TaskEntryFutures.add(offerEntry(entry));
+        }
 
         return TaskEntryFutures;
     }
@@ -432,8 +433,9 @@ public class TaskScheduler {
     }
 
     private Worker hasFreeWorker() {
-        for (Worker worker : workers)
+        for (Worker worker : workers) {
             if (worker.isFreeWorker()) return worker;
+        }
 
         return null;
     }

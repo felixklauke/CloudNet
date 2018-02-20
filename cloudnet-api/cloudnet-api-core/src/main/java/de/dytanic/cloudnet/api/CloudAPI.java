@@ -974,8 +974,9 @@ public final class CloudAPI implements MetaObj {
 
         if (cloudPlayers == null) return new ArrayList<>();
 
-        for (CloudPlayer cloudPlayer : cloudPlayers)
+        for (CloudPlayer cloudPlayer : cloudPlayers) {
             cloudPlayer.setPlayerExecutor(PlayerExecutorBridge.INSTANCE);
+        }
 
         return cloudPlayers;
     }

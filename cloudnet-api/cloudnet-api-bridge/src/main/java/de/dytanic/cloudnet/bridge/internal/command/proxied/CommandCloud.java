@@ -49,7 +49,9 @@ public final class CommandCloud extends Command implements TabExecutor {
                 if (CloudProxy.getInstance().getCachedServers().containsKey(args[1])) {
                     StringBuilder builder = new StringBuilder();
 
-                    for (short i = 2; i < args.length; i++) builder.append(args[i]).append(" ");
+                    for (short i = 2; i < args.length; i++) {
+                        builder.append(args[i]).append(" ");
+                    }
 
                     CloudAPI.getInstance().sendConsoleMessage(DefaultType.BUKKIT, args[1], builder.substring(0, builder.length() - 1));
                     commandSender.sendMessage(CloudAPI.getInstance().getPrefix() +
@@ -60,7 +62,9 @@ public final class CommandCloud extends Command implements TabExecutor {
             if (args[0].equalsIgnoreCase("cmdp") && commandSender.hasPermission("cloudnet.command.cloud.commandproxy")) {
                 StringBuilder builder = new StringBuilder();
 
-                for (short i = 2; i < args.length; i++) builder.append(args[i]).append(" ");
+                for (short i = 2; i < args.length; i++) {
+                    builder.append(args[i]).append(" ");
+                }
 
                 CloudAPI.getInstance().sendConsoleMessage(DefaultType.BUNGEE_CORD, args[1], builder.substring(0, builder.length() - 1));
                 commandSender.sendMessage(CloudAPI.getInstance().getPrefix() + "The information was sent to the cloud");
@@ -279,8 +283,9 @@ public final class CommandCloud extends Command implements TabExecutor {
                     if (CloudAPI.getInstance().getServerGroupMap().containsKey(args[1])) {
                         List<String> servers = CloudProxy.getInstance().getServers(args[1]);
 
-                        for (String server : servers)
+                        for (String server : servers) {
                             CloudAPI.getInstance().stopServer(server);
+                        }
 
                         commandSender.sendMessage(CloudAPI.getInstance().getPrefix() +
                                 "The information was sent to the cloud");
@@ -290,9 +295,10 @@ public final class CommandCloud extends Command implements TabExecutor {
                     if (CloudAPI.getInstance().getProxyGroupMap().containsKey(args[1])) {
                         Collection<ProxyInfo> servers = CloudAPI.getInstance().getProxys();
 
-                        for (ProxyInfo proxyInfo : servers)
+                        for (ProxyInfo proxyInfo : servers) {
                             if (proxyInfo.getServiceId().getGroup().equalsIgnoreCase(args[1]))
                                 CloudAPI.getInstance().stopProxy(proxyInfo.getServiceId().getServerId());
+                        }
 
                         commandSender.sendMessage(CloudAPI.getInstance().getPrefix() +
                                 "The information was sent to the cloud");
@@ -311,9 +317,10 @@ public final class CommandCloud extends Command implements TabExecutor {
                                     }
                                 });
 
-                        for (ServerInfo server : servers)
+                        for (ServerInfo server : servers) {
                             if (server.getOnlineCount() == 0)
                                 CloudAPI.getInstance().stopServer(server.getServiceId().getServerId());
+                        }
 
                         commandSender.sendMessage(CloudAPI.getInstance().getPrefix() +
                                 "The information was sent to the cloud");
@@ -323,9 +330,10 @@ public final class CommandCloud extends Command implements TabExecutor {
                     if (CloudAPI.getInstance().getProxyGroupMap().containsKey(args[1])) {
                         Collection<ProxyInfo> servers = CloudAPI.getInstance().getProxys();
 
-                        for (ProxyInfo proxyInfo : servers)
+                        for (ProxyInfo proxyInfo : servers) {
                             if (proxyInfo.getServiceId().getGroup().equalsIgnoreCase(args[1]) && proxyInfo.getOnlineCount() == 0)
                                 CloudAPI.getInstance().stopProxy(proxyInfo.getServiceId().getServerId());
+                        }
 
                         commandSender.sendMessage(CloudAPI.getInstance().getPrefix() +
                                 "The information was sent to the cloud");

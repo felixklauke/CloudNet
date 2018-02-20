@@ -17,7 +17,9 @@ public interface PlayerChatExecutor {
     }
 
     default void sendMessage(CloudPlayer cloudPlayer, BaseComponent... baseComponents) {
-        for (int i = 0; i < baseComponents.length; sendMessage(cloudPlayer, baseComponents[i++])) ;
+        for (int i = 0; i < baseComponents.length; sendMessage(cloudPlayer, baseComponents[i++])) {
+            ;
+        }
     }
 
 }

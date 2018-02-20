@@ -31,8 +31,9 @@ public final class PlayerInitListener implements IEventListener<PlayerInitEvent>
             }
         }
 
-        for (GroupEntityData groupEntityData : groupEntiys)
+        for (GroupEntityData groupEntityData : groupEntiys) {
             event.getCloudPlayer().getPermissionEntity().getGroups().remove(groupEntityData);
+        }
 
         if (event.getCloudPlayer().getPermissionEntity().getGroups().size() == 0) {
             event.getCloudPlayer().getPermissionEntity().getGroups().add(new GroupEntityData(PermissionModule.getInstance().getPermissionPool().getDefaultGroup().getName(), 0L));

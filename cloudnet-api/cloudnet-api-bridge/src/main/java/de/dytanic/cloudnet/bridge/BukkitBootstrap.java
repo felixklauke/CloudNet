@@ -113,8 +113,9 @@ public final class BukkitBootstrap extends JavaPlugin implements Runnable {
                     CloudServer.getInstance().update();
 
                     if (CloudAPI.getInstance().getServerGroupData(CloudAPI.getInstance().getGroup()).getAdvancedServerConfig().isDisableAutoSavingForWorlds())
-                        for (World world : Bukkit.getWorlds())
+                        for (World world : Bukkit.getWorlds()) {
                             world.setAutoSave(false);
+                        }
                 }
 
                 if (CloudServer.getInstance().getServerConfig().getProperties().contains(NetworkUtils.DEV_PROPERTY) && CloudAPI.getInstance().getModuleProperties().contains("devservice"))

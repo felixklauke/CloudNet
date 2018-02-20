@@ -18,7 +18,9 @@ public final class CollectionWrapper {
 
     public static <E, X> Collection<X> transform(Collection<E> collection, Catcher<X, E> catcher) {
         Collection<X> xCollection = newCopyOnWriteArrayList();
-        for (E e : collection) xCollection.add(catcher.doCatch(e));
+        for (E e : collection) {
+            xCollection.add(catcher.doCatch(e));
+        }
         return xCollection;
     }
 
@@ -47,11 +49,19 @@ public final class CollectionWrapper {
     }
 
     public static <E> void iterator(Collection<E> collection, Runnabled<E>... runnableds) {
-        for (E el : collection) for (Runnabled<E> runnabled : runnableds) runnabled.run(el);
+        for (E el : collection) {
+            for (Runnabled<E> runnabled : runnableds) {
+                runnabled.run(el);
+            }
+        }
     }
 
     public static <E> void iterator(E[] collection, Runnabled<E>... runnableds) {
-        for (E el : collection) for (Runnabled<E> runnabled : runnableds) runnabled.run(el);
+        for (E el : collection) {
+            for (Runnabled<E> runnabled : runnableds) {
+                runnabled.run(el);
+            }
+        }
     }
 
     public static <E, X, C> Collection<E> getCollection(java.util.Map<X, C> map, Catcher<E, C> catcher) {

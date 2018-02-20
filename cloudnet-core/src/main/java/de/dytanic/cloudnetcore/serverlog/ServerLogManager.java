@@ -62,8 +62,9 @@ public final class ServerLogManager implements Runnable {
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        for (ScreenInfo screenInfo : this.screenInfos.getS(rnd))
+        for (ScreenInfo screenInfo : this.screenInfos.getS(rnd)) {
             stringBuilder.append("<p>").append(screenInfo.getLine()).append("</p>");
+        }
 
         return stringBuilder.toString();
     }
@@ -71,7 +72,7 @@ public final class ServerLogManager implements Runnable {
     @Deprecated
     @Override
     public void run() {
-        for (String key : screenInfos.keySet())
+        for (String key : screenInfos.keySet()) {
             if (screenInfos.getF(key).getSecond() < System.currentTimeMillis()) {
                 String server = screenInfos.getF(key).getFirst();
 
@@ -85,5 +86,6 @@ public final class ServerLogManager implements Runnable {
 
                 screenInfos.remove(key);
             }
+        }
     }
 }

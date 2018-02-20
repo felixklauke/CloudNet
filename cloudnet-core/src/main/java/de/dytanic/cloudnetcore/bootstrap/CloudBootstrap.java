@@ -105,7 +105,7 @@ public final class CloudBootstrap {
             System.out.println("Use the command \"help\" for further information!");
             String commandLine;
             try {
-                while (true)
+                while (true) {
                     while ((commandLine = cloudNetLogging.getReader().readLine()) != null && CloudNet.RUNNING) {
                         String dispatcher = cloudNetCore.getDbHandlers().getCommandDispatcherDatabase().findDispatcher(commandLine);
                         if (dispatcher != null) {
@@ -122,11 +122,14 @@ public final class CloudBootstrap {
                             System.out.println("Command not found. Use the command \"help\" for further information!");
                         }
                     }
+                }
             } catch (Exception ex) {
 
             }
         } else {
-            while (true) NetworkUtils.sleepUninterruptedly(Long.MAX_VALUE);
+            while (true) {
+                NetworkUtils.sleepUninterruptedly(Long.MAX_VALUE);
+            }
         }
     }
 }

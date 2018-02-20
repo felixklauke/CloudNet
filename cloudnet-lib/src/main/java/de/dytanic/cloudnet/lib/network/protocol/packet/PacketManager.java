@@ -40,12 +40,13 @@ public final class PacketManager {
     public Collection<PacketInHandler> buildHandlers(int id) {
         Collection<PacketInHandler> packetIn = new LinkedList<>();
         if (packetHandlers.containsKey(id)) {
-            for (Class<? extends PacketInHandler> handlers : packetHandlers.get(id))
+            for (Class<? extends PacketInHandler> handlers : packetHandlers.get(id)) {
                 try {
                     packetIn.add(handlers.newInstance());
                 } catch (InstantiationException | IllegalAccessException e) {
                     return null;
                 }
+            }
         }
         return packetIn;
     }
